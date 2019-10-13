@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+option go_package = "/internal/grpcserver";
+
+// Add user
+message AddUserRequest {
+    string login = 1;
+    string password = 2;
+    string email = 3;
+    bool is_active = 4;
+    bool is_staff = 5;
+    string first_name = 7;
+    string last_name = 8;
+}
+
+// User model
+message User {
+    int64 user_id = 1;
+    string login = 2;
+    string password = 3;
+    string email = 4;
+    bool is_active = 5;
+    bool is_staff = 6;
+    google.protobuf.Timestamp date_created = 7;
+    google.protobuf.Timestamp date_modify = 8;
+    string first_name = 9;
+    string last_name = 10;
+}
+
+// Update user request
+message UpdateUserRequest {
+    int64 user_id = 1;
+    string login = 2;
+    string email = 4;
+    bool is_active = 5;
+    bool is_staff = 6;
+    google.protobuf.Timestamp date_created = 7;
+    google.protobuf.Timestamp date_modify = 8;
+    string first_name = 9;
+    string last_name = 10;
+}
+
+message StatusResponse {
+    bool status = 1;
+    string detail = 2;
+}
+
+message UserByIdRequest {
+    int64 user_id = 1;
+}
+
+message UserAddResponse {
+    bool status = 1;
+    string detail = 2;
+    int64 user_id = 3;
+}
+
+// Get User By Login
+message UserByLoginRequest {
+    string login = 1;
+}
+
+// Set Password
+message SetPasswordRequest {
+    string password = 1;
+    int64 user_id = 2;
+}
+
+// Add User Role
+message UserRole {
+    int64 user_id = 1;
+    int64 role_id = 2;
+}
+
+// Check Auth
+message CheckAuthRequest {
+    string login = 1;
+    string password = 2;
+}
+
+// User response
+message UserResponse {
+    bool status = 1;
+    string detail = 2;
+    User date = 3;
+}
+
+service Users {
+    // Add new user
+    rpc AddUser (AddUserRequest) returns (UserAddResponse) {
+        option (google.api.http) = {
+        post: "/v1/users"
+        body: "*"
+      };
+    }
+
+    // Ger user by id
+    rpc GetUserById (UserByIdRequest) returns (UserResponse) {
+        option (google.api.http).get = "/v1/user/{user_id}";
+    }
+    // Update user
+    rpc UpdateUser (UpdateUserRequest) returns (StatusResponse) {
+        option (google.api.http) = {
+        put: "/v1/user/{user_id}"
+        body: "*"
+      };
+    }
+
+    // Delete user by id
+    rpc DeleteUser (UserByIdRequest) returns (StatusResponse) {
+        option (google.api.http).delete = "/v1/user/{user_id}";
+    }
+
+    // Set password for new user
+    rpc SetPassword (SetPasswordRequest) returns (StatusResponse) {
+        option (google.api.http) = {
+        patch: "/v1/password/{user_id}"
+        body: "*"
+      };
+    }
+
+    // Check credential of an user
+    rpc CheckAuth (CheckAuthRequest) returns (StatusResponse) {
+        option (google.api.http) = {
+        post: "/v1/check-user"
+        body: "*"
+      };
+    }
+
+
+}
+
+
