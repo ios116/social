@@ -5,11 +5,9 @@ import (
 	"log"
 	"social/cmd"
 	"social/internal/webserver"
-	"time"
 )
 
 func Server() {
-	time.Sleep(5 * time.Second)
 	container := cmd.BuildContainer()
 	err := container.Invoke(func(serverWeb *webserver.HttpServer, logger *zap.Logger) {
 		serverWeb.Run()
