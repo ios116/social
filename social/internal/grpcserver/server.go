@@ -50,8 +50,9 @@ func (s *RPCServer) AddUser(ctx context.Context, in *AddUserRequest) (*UserAddRe
 		Email:     in.Email,
 		FirstName: in.FirstName,
 		LastName:  in.LastName,
-		IsActive:  in.IsActive,
-		IsStaff:   in.IsStaff,
+		City:      in.City,
+		Gender:    in.Gender,
+		Interests: in.Interests,
 	}
 	ID, err := s.UserService.AddUserUseCase(ctx, user)
 
@@ -98,8 +99,9 @@ func (s *RPCServer) GetUserById(ctx context.Context, in *UserByIdRequest) (*User
 			Login:       user.Login,
 			Password:    user.Password,
 			Email:       user.Email,
-			IsActive:    user.IsActive,
-			IsStaff:     user.IsStaff,
+			City:        user.City,
+			Gender:      user.Gender,
+			Interests:   user.Interests,
 			DateCreated: dateCreated,
 			DateModify:  dateModify,
 			FirstName:   user.FirstName,
@@ -137,8 +139,9 @@ func (s *RPCServer) UpdateUser(ctx context.Context, in *UpdateUserRequest) (*Sta
 		FirstName:   in.FirstName,
 		DateCreated: dateCreated,
 		LastName:    in.LastName,
-		IsActive:    in.IsActive,
-		IsStaff:     in.IsStaff,
+		City:        in.City,
+		Gender:      in.Gender,
+		Interests:   in.Interests,
 	}
 
 	err = s.UserService.UpdateUserUseCase(ctx, user)

@@ -7,14 +7,15 @@ import (
 )
 
 type User struct {
-	ID          int64
-	Login       string
-	Password    string
-	Email       string
-	FirstName   string
-	LastName    string
-	IsActive    bool
-	IsStaff     bool
+	ID        int64
+	Login     string
+	Password  string
+	Email     string
+	FirstName string
+	LastName  string
+	City      string
+	Gender    string
+	Interests string
 	DateCreated time.Time
 	DateModify  time.Time
 }

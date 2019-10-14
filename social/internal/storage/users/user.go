@@ -16,10 +16,11 @@ type UserDB struct {
 	Email       string
 	FirstName   sql.NullString `db:"first_name"`
 	LastName    sql.NullString `db:"last_name"`
-	IsActive    bool           `db:"is_active"`
-	IsStaff     bool           `db:"is_staff"`
-	DateCreated time.Time      `db:"date_created"`
-	DateModify  time.Time      `db:"date_modify"`
+	City        sql.NullString
+	Gender      sql.NullString
+	Interests   sql.NullString
+	DateCreated time.Time `db:"date_created"`
+	DateModify  time.Time `db:"date_modify"`
 }
 
 type UserRole struct {
@@ -29,8 +30,8 @@ type UserRole struct {
 }
 
 func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
-	query := "INSERT INTO users(login, password, email, is_staff, is_active, date_created, date_modify, first_name, last_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"
-	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.IsStaff, user.IsActive, user.DateCreated, user.DateModify, user.FirstName, user.LastName)
+	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?);"
+	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.City, user.Gender, user.Interests, user.DateCreated, user.DateModify, user.FirstName, user.LastName)
 	switch err {
 	case nil:
 		id, err := result.LastInsertId()
@@ -45,18 +46,17 @@ func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, 
 
 func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error {
 
-    fmt.Println("from sql", user)
+	fmt.Println("from sql", user)
 
-	query := "UPDATE users SET login = :login, email = :email, is_staff = :is_staff, is_active = :is_active, date_created = :date_created, date_modify = :date_modify,first_name = :first_name, last_name = :last_name  WHERE id=:id"
-
-
+	query := "UPDATE users SET login = :login, email = :email, city = :city, gender = :gender, interests = :interests, date_created = :date_created, date_modify = :date_modify,first_name = :first_name, last_name = :last_name  WHERE id=:id"
 
 	result, err := p.Db.NamedExecContext(ctx, query,
 		map[string]interface{}{
 			"login":        user.Login,
 			"email":        user.Email,
-			"is_staff":     user.IsStaff,
-			"is_active":    user.IsActive,
+			"gender":       user.Gender,
+			"city":         user.City,
+			"interests":    user.Interests,
 			"date_created": user.DateCreated,
 			"date_modify":  time.Now(),
 			"id":           user.ID,

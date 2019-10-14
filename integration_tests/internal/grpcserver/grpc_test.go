@@ -34,35 +34,33 @@ func TestGrpc(t *testing.T) {
 	server := NewUsersClient(conn)
 	ctx := context.Background()
 
-	user:=&User{
-		Login:                "login2",
-		Password:             "123456",
-		Email:                "site@mail.ru",
-		IsActive:             false,
-		IsStaff:              false,
-		FirstName:            "Ivanov",
-		LastName:             "Popov",
+	user := &User{
+		Login:     "login2",
+		Password:  "123456",
+		Email:     "site@mail.ru",
+		City:      "kazan",
+		Gender:    "Female",
+		FirstName: "Ivanov",
+		LastName:  "Popov",
 	}
-
 
 	t.Run("add", func(t *testing.T) {
 		newUser := &AddUserRequest{
 			Login:     user.Login,
 			Password:  user.Password,
 			Email:     user.Email,
-			IsActive:  false,
-			IsStaff:   false,
+		    City: user.City,
+			Gender: user.Gender,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 		}
 		userRPC, err := server.AddUser(ctx, newUser)
 		if err != nil {
-			t.Fatal("test add:",err)
+			t.Fatal("test add:", err)
 		}
 		t.Log(userRPC.UserId)
 		user.UserId = userRPC.UserId
 	})
-
 
 	t.Run("Get user by id", func(t *testing.T) {
 		byId := &UserByIdRequest{
@@ -86,8 +84,8 @@ func TestGrpc(t *testing.T) {
 			UserId:      user.UserId,
 			Login:       user.Login,
 			Email:       user.Email,
-			IsActive:    true,
-			IsStaff:     user.IsStaff,
+			Gender: user.Gender,
+
 			DateCreated: user.DateCreated,
 			FirstName:   "Vladimir",
 			LastName:    "Popov",
