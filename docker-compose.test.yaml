@@ -73,7 +73,7 @@ services:
       HTTP_HOST: 0.0.0.0
     depends_on:
       - grpc.ru
-    command: sh -c './wait-for.sh grpc.ru:50051 -- "true"'
+    command: "true"
     networks:
       - net
 
