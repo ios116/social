@@ -1,19 +1,15 @@
 package webserver
 
 import (
-	"context"
 	"html/template"
-	"net/http"
 	"path"
 )
 
-var templates map[string]*template.Template
 
-// InitTemplate Compile view html
-func (s *HttpServer) InitTemplate() map[string]*template.Template {
+func NewTemplates() map[string]*template.Template {
 	templates := make(map[string]*template.Template)
-	for _, item := range s.templates() {
-		templates[item.name] = template.Must(template.ParseFiles(item.base, item.name))
+	for _, item := range temps() {
+		templates[item.name] = template.Must(template.ParseFiles(item.base, item.child))
 	}
 	return templates
 }
@@ -21,27 +17,28 @@ func (s *HttpServer) InitTemplate() map[string]*template.Template {
 type templateName struct {
 	name string
 	base string
+	child string
 }
 
-func (s *HttpServer) templates() []templateName {
-
-	absPath := "/code/internal/webserver/html"
-	path.Join()
+func temps() []templateName {
+	absPath := "/code/html"
 	return []templateName{
 		{
-			name: path.Join(absPath, "loginForm.html"),
-			base: "base.html",
+			child: path.Join(absPath, "loginForm.html"),
+			base: path.Join(absPath,"base.html"),
+			name: "login",
+		},
+		{
+			child: path.Join(absPath, "registrationForm.html"),
+			base: path.Join(absPath,"base.html"),
+			name: "registration",
+		},
+		{
+			child: path.Join(absPath, "userProfile.html"),
+			base: path.Join(absPath,"base.html"),
+			name: "profile",
 		},
 	}
 }
 
-func (s *HttpServer) RenderTemplate(ctx *context.Context, w http.ResponseWriter, templateName string, date interface{}) {
-	tmpl, ok := templates[templateName]
-	if !ok {
-		http.Error(w, "The html does not exist.", http.StatusInternalServerError)
-	}
-	err := tmpl.Execute(w, date)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
+

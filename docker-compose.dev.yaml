@@ -1,0 +1,74 @@
+version: '3'
+services:
+
+  db:
+    image: mysql:5.7.27
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+
+  grpc.ru:
+    image: social:1.1
+    environment:
+      GRPC_PORT: 50051
+      GRPC_HOST: 0.0.0.0
+      HTTP_PORT: 8080
+      HTTP_HOST: 0.0.0.0
+      APP_BUILD: dev
+      MYSQL_PASSWORD: qwerty
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+      MYSQL_PORT: 3306
+      MYSQL_HOST: db
+    command: go run main.go -s rpc
+    restart: on-failure
+    volumes:
+      - ./social/:/code
+    ports:
+      - "50051:50051"
+    depends_on:
+      - db
+    networks:
+      - net
+
+  rest.ru:
+    image: social:1.1
+    environment:
+      GRPC_PORT: 50051
+      GRPC_HOST: grpc.ru
+      HTTP_PORT: 8080
+      HTTP_HOST: 0.0.0.0
+      APP_BUILD: dev
+      MYSQL_PASSWORD: qwerty
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+      MYSQL_PORT: 3306
+      MYSQL_HOST: db
+    command:  go run main.go -s web
+    restart: on-failure
+    volumes:
+      - ./social/:/code
+    ports:
+      - "8080:8080"
+    depends_on:
+      - grpc.ru
+    networks:
+      - net
+
+volumes:
+  tmp:
+
+networks:
+  net:
+    driver: bridge
+
+
