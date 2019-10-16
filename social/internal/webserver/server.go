@@ -7,6 +7,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"html/template"
 	"net/http"
 	"social/internal/config"
 	"social/internal/domain/usecase"
@@ -19,11 +20,15 @@ type HttpServer struct {
 	HttpConfig  *config.HttpConf
 	GrpcConfig  *config.GrpcConf
 	Logger      *zap.Logger
+	Templates map[string]*template.Template
 }
 
-func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger) *HttpServer {
-	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger}
+func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger, templates map[string]*template.Template) *HttpServer {
+	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates}
 }
+
+
+
 
 type tokenAuth struct {
 	Token string
