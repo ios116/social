@@ -70,7 +70,7 @@ services:
       GRPC_PORT: 50051
       GRPC_HOST: grpc.ru
       HTTP_PORT: 8080
-      HTTP_HOST: 0.0.0.0
+      HTTP_HOST: rest.ru
     depends_on:
       - grpc.ru
     command: sh -c './wait-for.sh grpc.ru:50051 -- "true"'
