@@ -7,7 +7,7 @@ import (
 
 
 var funcMap = template.FuncMap{
-	"User":  func() interface{} {return nil},
+	"User":  func() SessionContext {return SessionContext{}},
 }
 
 func NewTemplates() map[string]*template.Template {

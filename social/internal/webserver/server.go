@@ -9,34 +9,41 @@ import (
 	"net/http"
 	"social/internal/config"
 	"social/internal/domain/usecase"
-	"social/internal/webserver/auth"
-	"social/internal/webserver/middleware"
+	"time"
 )
 
 type HttpServer struct {
-	UserService usecase.UserService
-	HttpConfig  *config.HttpConf
-	GrpcConfig  *config.GrpcConf
-	Logger      *zap.Logger
-	Templates   map[string]*template.Template
-	SessionProvider *auth.SessionProvider
+	UserService     usecase.UserService
+	HttpConfig      *config.HttpConf
+	GrpcConfig      *config.GrpcConf
+	Logger          *zap.Logger
+	Templates       map[string]*template.Template
+	SessionProvider SessionProvider
 }
 
 func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger) *HttpServer {
 	templates:= NewTemplates()
-	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates}
+	sessionProvider:=NewSessionManager(httpConfig.ContextKey, time.Duration(httpConfig.SessionTime))
+	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates, SessionProvider:sessionProvider}
 }
 
-func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, templateName string, date interface{}) {
+func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, templateName string, date map[string]interface{}) {
 	tmpl, ok := s.Templates[templateName]
 	if !ok {
 		http.Error(w, "The html does not exist.", http.StatusInternalServerError)
 		return
 	}
-	tmpl.Funcs(template.FuncMap{
-		"User": func() interface{} { return ctx.Value("userID")},
-	})
-	fmt.Println("userID====>", ctx.Value("userID"))
+	//tmpl.Funcs(template.FuncMap{
+	//	"User": func() SessionContext { return ctx.Value(s.HttpConfig.ContextKey).(SessionContext)},
+	//})
+    if date == nil {
+    	date =make(map[string]interface{})
+	}
+	date["User"], ok = ctx.Value(s.HttpConfig.ContextKey).(SessionContext)
+	if !ok {
+		s.Logger.Error("interface {} is not SessionContext")
+	}
+
 	err := tmpl.ExecuteTemplate(w ,"base",date)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -63,8 +70,8 @@ func (s *HttpServer) Run() {
 
 	dsn := fmt.Sprintf("%s:%d", s.HttpConfig.Host, s.HttpConfig.Port)
 	router := s.NewRouter()
-	router.Use(middleware.Logger)
-	router.Use(middleware.SessionMiddleware)
+	router.Use(s.Log)
+	router.Use(s.SessionMiddleware)
 	httpServer := http.Server{
 		Addr:    dsn,
 		Handler: router,

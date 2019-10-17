@@ -3,8 +3,6 @@ package webserver
 import (
 	"net/http"
 	"social/internal/domain/entities"
-	"social/internal/webserver/middleware"
-	"strconv"
 	"strings"
 )
 
@@ -45,8 +43,11 @@ func (s *HttpServer) registrationHandler(w http.ResponseWriter, r *http.Request)
 		http.Redirect(w, r, "/registration/?error", 302)
 		return
 	}
-
-	err = middleware.SetToken(w, strconv.FormatInt(id, 10), 24)
+	userSession :=SessionContext{
+		ID:    id,
+		Login: user.Login,
+	}
+	err = s.SessionProvider.SetSession(w, userSession)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,8 +64,11 @@ func (s *HttpServer) loginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login?error", 302)
 		return
 	}
-
-	err = middleware.SetToken(w, strconv.FormatInt(user.ID, 10), 24)
+    userSession :=SessionContext{
+		ID:    user.ID,
+		Login: user.Login,
+	}
+	err = s.SessionProvider.SetSession(w, userSession)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
