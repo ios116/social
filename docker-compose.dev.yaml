@@ -54,6 +54,8 @@ services:
       MYSQL_DATABASE: soc_db
       MYSQL_PORT: 3306
       MYSQL_HOST: db
+      SESSION_KEY: Auth
+      MAX_LIFE_TIME: 24
     command:  go run main.go -s web
     restart: on-failure
     volumes:

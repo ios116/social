@@ -32,39 +32,12 @@ services:
       MYSQL_HOST: db
     command: sh -c './wait-for.sh db:3306 -- ./main -s rpc'
     restart: on-failure
-    #    volumes:
-    #      - ./social/:/code
     ports:
       - "50051:50051"
     depends_on:
       - db
     networks:
       - net
-
-  rest.ru:
-    build: ./social
-    environment:
-      GRPC_PORT: 50051
-      GRPC_HOST: grpc.ru
-      HTTP_PORT: 8080
-      HTTP_HOST: 0.0.0.0
-      APP_BUILD: dev
-      MYSQL_PASSWORD: qwerty
-      MYSQL_USER: soc_user
-      MYSQL_DATABASE: soc_db
-      MYSQL_PORT: 3306
-      MYSQL_HOST: db
-    command:  sh -c './wait-for.sh grpc.ru:50051 -- ./main -s web'
-    restart: on-failure
-    #    volumes:
-    #      - ./social/:/code
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    networks:
-      - net
-
   integration_tests:
     build: ./integration_tests
     environment:

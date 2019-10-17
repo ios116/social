@@ -6,10 +6,14 @@ import (
 )
 
 
+var funcMap = template.FuncMap{
+	"User":  func() interface{} {return nil},
+}
+
 func NewTemplates() map[string]*template.Template {
 	templates := make(map[string]*template.Template)
 	for _, item := range temps() {
-		templates[item.name] = template.Must(template.ParseFiles(item.base, item.child))
+		templates[item.name] = template.Must(template.New("base").Funcs(funcMap).ParseFiles(item.base, item.child))
 	}
 	return templates
 }

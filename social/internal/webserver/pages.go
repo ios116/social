@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"social/internal/domain/entities"
 	"social/internal/webserver/middleware"
+	"strconv"
 	"strings"
 )
 
@@ -45,7 +46,7 @@ func (s *HttpServer) registrationHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = middleware.SetToken(w, string(id), 24)
+	err = middleware.SetToken(w, strconv.FormatInt(id, 10), 24)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -57,12 +58,13 @@ func (s *HttpServer) loginHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	login := strings.TrimSpace(r.FormValue("login"))
 	password := strings.TrimSpace(r.FormValue("password"))
-	_, err := s.UserService.CheckAuthUseCase(ctx, login, password)
+	user, err := s.UserService.CheckAuthUseCase(ctx, login, password)
 	if err != nil {
 		http.Redirect(w, r, "/login?error", 302)
 		return
 	}
-	err = middleware.SetToken(w, string(id), 24)
+
+	err = middleware.SetToken(w, strconv.FormatInt(user.ID, 10), 24)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

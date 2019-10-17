@@ -7,21 +7,21 @@ import (
 	"time"
 )
 
-// SessionContext data in session
+// SessionContext data in auth
 type SessionContext struct {
 	ID interface{}
 }
 
-// SessionContextKey session context key
+// SessionContextKey auth context key
 type SessionContextKey string
 
-// SessionKey key of session context
-var SessionKey = SessionContextKey("session")
+// SessionKey key of auth context
+var SessionKey = SessionContextKey("userID")
 
 // SigningKey solt
 var SigningKey = []byte("salt")
 
-// Claims fo session
+// Claims fo auth
 type Claims struct {
 	ID string `json:"id"`
 	jwt.StandardClaims
@@ -33,7 +33,6 @@ func sessionCheck(r *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	// Return a token using the cookie
 	token, err := jwt.ParseWithClaims(cookie.Value, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		// Make sure token's signature wasn't changed
@@ -42,7 +41,6 @@ func sessionCheck(r *http.Request) (string, error) {
 		}
 		return SigningKey, nil
 	})
-
 	if err != nil {
 		return "", err
 	}
@@ -60,8 +58,10 @@ func SessionMiddleware(inner http.Handler) http.Handler {
 		params := SessionContext{}
 		if id, err := sessionCheck(r); err == nil {
 			params.ID = id
+		} else {
 		}
-		ctx := context.WithValue(r.Context(), SessionKey, params)
+
+		ctx := context.WithValue(r.Context(), "userID", params)
 		r = r.WithContext(ctx)
 		inner.ServeHTTP(w, r)
 	})

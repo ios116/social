@@ -4,14 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 	"html/template"
 	"net/http"
 	"social/internal/config"
 	"social/internal/domain/usecase"
-	gw "social/internal/grpcserver"
+	"social/internal/webserver/auth"
 	"social/internal/webserver/middleware"
 )
 
@@ -21,6 +19,7 @@ type HttpServer struct {
 	GrpcConfig  *config.GrpcConf
 	Logger      *zap.Logger
 	Templates   map[string]*template.Template
+	SessionProvider *auth.SessionProvider
 }
 
 func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger) *HttpServer {
@@ -34,41 +33,14 @@ func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, 
 		http.Error(w, "The html does not exist.", http.StatusInternalServerError)
 		return
 	}
+	tmpl.Funcs(template.FuncMap{
+		"User": func() interface{} { return ctx.Value("userID")},
+	})
+	fmt.Println("userID====>", ctx.Value("userID"))
 	err := tmpl.ExecuteTemplate(w ,"base",date)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-type tokenAuth struct {
-	Token string
-}
-
-func (t *tokenAuth) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
-	return map[string]string{
-		"authorization": t.Token,
-	}, nil
-}
-
-func (t *tokenAuth) RequireTransportSecurity() bool {
-	return false
-}
-
-// GrpcHandler connect to grpc server
-func (s *HttpServer) GrpcHandler(ctx context.Context) (http.Handler, error) {
-	addressRpc := fmt.Sprintf("%s:%d", s.GrpcConfig.GrpcHost, s.GrpcConfig.GrpcPort)
-	option := grpc.WithPerRPCCredentials(&tokenAuth{"Bearer secret"})
-	conn, err := grpc.Dial(addressRpc, option, grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-	rpcGWMux := runtime.NewServeMux()
-
-	err = gw.RegisterUsersHandler(ctx, rpcGWMux, conn)
-	if err != nil {
-		return nil, err
-	}
-	return rpcGWMux, nil
 }
 
 func (s *HttpServer) NewRouter() *mux.Router {
@@ -90,16 +62,9 @@ func (s *HttpServer) NewRouter() *mux.Router {
 func (s *HttpServer) Run() {
 
 	dsn := fmt.Sprintf("%s:%d", s.HttpConfig.Host, s.HttpConfig.Port)
-	//ctx := context.Background()
-	//rpcHandler, err := s.GrpcHandler(ctx)
-	//if err != nil {
-	//	s.Logger.Fatal(err.Error())
-	//}
-
 	router := s.NewRouter()
 	router.Use(middleware.Logger)
 	router.Use(middleware.SessionMiddleware)
-	//router.PathPrefix("/v1").Handler(rpcHandler)
 	httpServer := http.Server{
 		Addr:    dsn,
 		Handler: router,
