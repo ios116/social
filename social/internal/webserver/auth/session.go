@@ -15,20 +15,20 @@ type SessionProvider interface {
 	DeleteSession(w http.ResponseWriter) error
 }
 
-type Manager struct {
+type SessionManager struct {
 	SessionKey  string
 	MaxLifetime time.Duration
 }
 
 // DeleteSession delete auth cookies
- func (s *Manager)  DeleteSession(w http.ResponseWriter) error {
+ func (s *SessionManager)  DeleteSession(w http.ResponseWriter) error {
 	 deleteCookie := http.Cookie{Name: "Auth", Value: "none", Expires: time.Now(), Path: "/"}
 	 http.SetCookie(w, &deleteCookie)
  	return nil
  }
 
 // GetSession returning a user id as the string in cookies or returning error
-func (s *Manager)  GetSession(r *http.Request) (string, error) {
+func (s *SessionManager)  GetSession(r *http.Request) (string, error) {
 	// if no Auth cookie is set then return a 404 not found page
 	cookie, err := r.Cookie("Auth")
 	if err != nil {
@@ -54,7 +54,7 @@ func (s *Manager)  GetSession(r *http.Request) (string, error) {
 }
 
 // SetSession set the token in the cookie if the password is correct
-func (s *Manager) SetSession(w http.ResponseWriter, id string) error {
+func (s *SessionManager) SetSession(w http.ResponseWriter, id string) error {
 	mySigningKey := SigningKey
 	// expire the token and cookie
 	expireToken := time.Now().Add(24 * time.Hour * s.MaxLifetime).Unix()
@@ -76,7 +76,7 @@ func (s *Manager) SetSession(w http.ResponseWriter, id string) error {
 	return nil
 }
 
-type Context struct {
+type SessionContext struct {
 	ID int64
 	Login string
 	Email string
