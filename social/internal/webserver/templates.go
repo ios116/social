@@ -38,6 +38,11 @@ func temps() []templateName {
 			base: path.Join(absPath,"base.html"),
 			name: "profile",
 		},
+		{
+			child: path.Join(absPath, "index.html"),
+			base: path.Join(absPath,"base.html"),
+			name: "index",
+		},
 	}
 }
 

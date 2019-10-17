@@ -15,6 +15,7 @@ services:
       - "3306:3306"
     volumes:
       - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
 
   grpc.ru:
     build: ./social
@@ -60,7 +61,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - grpc.ru
+      - db
     networks:
       - net
 

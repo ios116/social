@@ -27,7 +27,7 @@ func (s *HttpServer) Routing() []Route {
 		{
 			"login",
 			"GET",
-			"/",
+			"/login",
 			s.loginForm,
 		},
 		{
@@ -41,6 +41,24 @@ func (s *HttpServer) Routing() []Route {
 			"GET",
 			"/profile/{user_id}",
 			s.userProfile,
+		},
+		{
+			"index",
+			"GET",
+			"/",
+			s.Index,
+		},
+		{
+			"login_handler",
+			"POST",
+			"/handler/login",
+			s.loginHandler,
+		},
+		{
+			"registration_handler",
+			"POST",
+			"/handler/registration",
+			s.registrationHandler,
 		},
 	}
 }

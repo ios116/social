@@ -10,7 +10,6 @@
 package middleware
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"time"
@@ -18,8 +17,6 @@ import (
 
 func Logger(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.WithValue(r.Context(), "id", "some user")
-		r = r.WithContext(ctx)
 		start := time.Now()
 		inner.ServeHTTP(w, r)
 		log.Printf(

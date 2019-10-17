@@ -14,8 +14,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      # https://github.com/docker-library/postgres/blob/master/docker-entrypoint.sh#L145
       - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
 
   grpc.ru:
     build: ./social
@@ -32,8 +32,6 @@ services:
       MYSQL_HOST: db
     command: sh -c './wait-for.sh db:3306 -- ./main -s rpc'
     restart: on-failure
-#    volumes:
-#      - ./social/:/code
     ports:
       - "50051:50051"
     depends_on:
@@ -56,12 +54,10 @@ services:
       MYSQL_HOST: db
     command:  sh -c './wait-for.sh grpc.ru:50051 -- ./main -s web'
     restart: on-failure
-#    volumes:
-#      - ./social/:/code
     ports:
       - "8080:8080"
     depends_on:
-      - grpc.ru
+      - db
     networks:
       - net
 

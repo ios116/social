@@ -30,17 +30,18 @@ type UserRole struct {
 }
 
 func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
+	fmt.Println("user====>",user)
 	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?);"
 	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.City, user.Gender, user.Interests, user.DateCreated, user.DateModify, user.FirstName, user.LastName)
 	switch err {
 	case nil:
 		id, err := result.LastInsertId()
 		if err != nil {
-			return 0, err
+			return 0, fmt.Errorf("sql: last insert id: %s", err)
 		}
 		return id, nil
 	default:
-		return 0, err
+		return 0, fmt.Errorf("sql: %s", err)
 	}
 }
 

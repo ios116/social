@@ -74,8 +74,6 @@ func (s *HttpServer) GrpcHandler(ctx context.Context) (http.Handler, error) {
 func (s *HttpServer) NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/code/assets"))))
-	//fs := http.FileServer(http.Dir("/code/assets/"))
-	//router.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
 	for _, route := range s.Routing() {
 		var handler http.Handler
@@ -92,15 +90,16 @@ func (s *HttpServer) NewRouter() *mux.Router {
 func (s *HttpServer) Run() {
 
 	dsn := fmt.Sprintf("%s:%d", s.HttpConfig.Host, s.HttpConfig.Port)
-	ctx := context.Background()
-	rpcHandler, err := s.GrpcHandler(ctx)
-	if err != nil {
-		s.Logger.Fatal(err.Error())
-	}
+	//ctx := context.Background()
+	//rpcHandler, err := s.GrpcHandler(ctx)
+	//if err != nil {
+	//	s.Logger.Fatal(err.Error())
+	//}
 
 	router := s.NewRouter()
 	router.Use(middleware.Logger)
-	router.PathPrefix("/v1").Handler(rpcHandler)
+	router.Use(middleware.SessionMiddleware)
+	//router.PathPrefix("/v1").Handler(rpcHandler)
 	httpServer := http.Server{
 		Addr:    dsn,
 		Handler: router,

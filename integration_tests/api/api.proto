@@ -127,7 +127,7 @@ service Users {
     }
 
     // Check credential of an user
-    rpc CheckAuth (CheckAuthRequest) returns (StatusResponse) {
+    rpc CheckAuth (CheckAuthRequest) returns (UserResponse) {
         option (google.api.http) = {
         post: "/v1/check-user"
         body: "*"

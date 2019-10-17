@@ -15,7 +15,7 @@ type UserService interface {
 	GetUserByIdUseCase(ctx context.Context, ID int64) (*entities.User, error)
 	GetUserByLoginUseCase(ctx context.Context, login string) (*entities.User, error)
 	SetPasswordUseCase(ctx context.Context, password string, ID int64) error
-	CheckAuthUseCase(ctx context.Context, login string, password string) (bool, error)
+	CheckAuthUseCase(ctx context.Context, login string, password string) (*entities.User, error)
 }
 
 type Service struct {
@@ -26,28 +26,31 @@ func NewService(userRepository entities.UserRepository) *Service {
 	return &Service{userRepository: userRepository}
 }
 
-func (s *Service) CheckAuthUseCase(ctx context.Context, login string, password string) (bool, error) {
+func (s *Service) CheckAuthUseCase(ctx context.Context, login string, password string) (*entities.User, error) {
 	if login == "" {
-		return false, exceptions.LoginRequired
+		return nil, exceptions.LoginRequired
 	}
 	if password == "" {
-		return false, exceptions.PasswordRequired
+		return nil, exceptions.PasswordRequired
 	}
 	user, err := s.userRepository.GetUserByLogin(ctx, login)
+
 	if err != nil {
-		return false, exceptions.Auth
+		return nil, exceptions.ObjectDoesNotExist
 	}
 
 	if !CheckPasswordHash(password, user.Password) {
-		return false, exceptions.Auth
+		return nil, exceptions.Auth
 	}
-	return true, nil
+	return user, nil
 }
 
 func (s *Service) AddUserUseCase(ctx context.Context, user *entities.User) (int64, error) {
+
 	if err := user.Validation(); err != nil {
 		return 0, err
 	}
+
 	hash, err := HashPassword(user.Password)
 	if err != nil {
 		return 0, err
@@ -64,7 +67,7 @@ func (s *Service) UpdateUserUseCase(ctx context.Context, user *entities.User) er
 		return err
 	}
 	user.DateModify = time.Now().UTC()
-	fmt.Println("from usecase=>",user)
+	fmt.Println("from usecase=>", user)
 	return s.userRepository.UpdateUser(ctx, user)
 }
 

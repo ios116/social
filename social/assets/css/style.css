@@ -1,0 +1,16 @@
+body {
+    padding-top: 5rem;
+}
+.starter-template {
+    padding: 3rem 1.5rem;
+}
+.form-signin {
+
+    text-align: center;
+    max-width: 350px;
+    margin: 0 auto;
+}
+.form-registration {
+    max-width: 350px;
+    margin: 0 auto;
+}

@@ -1,6 +1,53 @@
 {{ define "body"}}
-    <h1>Registration</h1>
+    <div>
+
+        <form method="post" action="/handler/registration" class="form-registration">
+            <h1 class="h3 mb-3 font-weight-normal">Registration</h1>
+            <div class="form-group">
+                <label for="inputLogin">Login</label>
+                <input type="text" id="inputLogin" name="login" class="form-control" required
+                       autofocus>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail" >Email address</label>
+                <input type="email" id="inputEmail" name='email' class="form-control"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" >Password</label>
+                <input type="password" id="inputPassword" name="password" class="form-control"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="inputLastName" >Last name</label>
+                <input type="text" id="inputLastName" name="last_name" class="form-control"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="inputFirstName" >First Name</label>
+                <input type="text" id="inputFirstName" name="first_name" class="form-control"
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="inputCity" >City</label>
+                <input type="text" id="inputCity" name="city" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="form-control" name="gender" id="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Interests</label>
+                <textarea class="form-control" name="interests" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
+
+            <button class="btn btn-lg btn-secondary btn-block" type="submit">Sign in</button>
+        </form>
+    </div>
 {{end}}
 {{block "footer" .}}
-    Footer registration
+
 {{end}}

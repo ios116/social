@@ -209,18 +209,41 @@ func (s *RPCServer) SetPassword(ctx context.Context, in *SetPasswordRequest) (*S
 }
 
 // Check credential of an user
-func (s *RPCServer) CheckAuth(ctx context.Context, in *CheckAuthRequest) (*StatusResponse, error) {
-	_, err := s.UserService.CheckAuthUseCase(ctx, in.Login, in.Password)
+func (s *RPCServer) CheckAuth(ctx context.Context, in *CheckAuthRequest) (*UserResponse, error) {
+	user, err := s.UserService.CheckAuthUseCase(ctx, in.Login, in.Password)
 	switch err {
 	case nil:
-		return &StatusResponse{
+		dateCreated, err := ptypes.TimestampProto(user.DateCreated)
+		if err != nil {
+			return nil, err
+		}
+		dateModify, err := ptypes.TimestampProto(user.DateModify)
+
+		if err != nil {
+			return nil, err
+		}
+		userRpc := &User{
+			UserId:      user.ID,
+			Login:       user.Login,
+			Password:    user.Password,
+			Email:       user.Email,
+			City:        user.City,
+			Gender:      user.Gender,
+			Interests:   user.Interests,
+			DateCreated: dateCreated,
+			DateModify:  dateModify,
+			FirstName:   user.FirstName,
+			LastName:    user.LastName,
+		}
+		return &UserResponse{
 			Status: true,
 			Detail: "Success",
+			Date:   userRpc,
 		}, nil
 	default:
 		var domainErr exceptions.DomainError
 		if errors.As(err, &domainErr) {
-			return &StatusResponse{
+			return &UserResponse{
 				Status: false,
 				Detail: domainErr.Error(),
 			}, nil
