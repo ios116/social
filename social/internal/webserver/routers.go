@@ -20,4 +20,28 @@ type Route struct {
 	HandlerFunc http.HandlerFunc
 }
 
-type Routes []Route
+
+func (s *HttpServer) Routing() []Route {
+	return []Route{
+
+		{
+			"login",
+			"GET",
+			"/",
+			s.loginForm,
+		},
+		{
+			"registration",
+			"GET",
+			"/registration",
+			s.registrationForm,
+		},
+		{
+			"profile",
+			"GET",
+			"/profile/{user_id}",
+			s.userProfile,
+		},
+	}
+}
+

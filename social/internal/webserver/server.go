@@ -20,15 +20,25 @@ type HttpServer struct {
 	HttpConfig  *config.HttpConf
 	GrpcConfig  *config.GrpcConf
 	Logger      *zap.Logger
-	Templates map[string]*template.Template
+	Templates   map[string]*template.Template
 }
 
-func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger, templates map[string]*template.Template) *HttpServer {
+func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger) *HttpServer {
+	templates:= NewTemplates()
 	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates}
 }
 
-
-
+func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, templateName string, date interface{}) {
+	tmpl, ok := s.Templates[templateName]
+	if !ok {
+		http.Error(w, "The html does not exist.", http.StatusInternalServerError)
+		return
+	}
+	err := tmpl.ExecuteTemplate(w ,"base",date)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
 
 type tokenAuth struct {
 	Token string
@@ -63,7 +73,7 @@ func (s *HttpServer) GrpcHandler(ctx context.Context) (http.Handler, error) {
 
 func (s *HttpServer) NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/root/assets"))))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/code/assets"))))
 	//fs := http.FileServer(http.Dir("/code/assets/"))
 	//router.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
@@ -101,13 +111,4 @@ func (s *HttpServer) Run() {
 	}
 }
 
-func (s *HttpServer) Routing() []Route {
-	return []Route{
-		{
-			"index",
-			"GET",
-			"/",
-			s.Index,
-		},
-	}
-}
+
