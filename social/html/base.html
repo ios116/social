@@ -21,13 +21,18 @@
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
         </ul>
-        <a href="/registration" class="btn btn-secondary active" role="button" aria-pressed="true">Registration</a>&nbsp;
-        <a href="/login" class="btn btn-secondary active" role="button" aria-pressed="true">Sign In</a>
+        {{if eq .Session.ID 0 }}
+            <a href="/login" class="btn btn-secondary active" role="button" aria-pressed="true">Sign In</a> &nbsp;
+
+            <a href="/registration" class="btn btn-secondary active" role="button"
+               aria-pressed="true">Registration</a>&nbsp;
+        {{else}}
+            <a href="/logout" class="btn btn-secondary active" role="button" aria-pressed="true">Log Out
+                [{{.Session.Login}}]</a>
+        {{end}}
     </div>
 </nav>
 <main role="main" class="container">
-
-    <H1>fgfdgfgdfg - {{ .User }}</H1>
     <div class="starter-template">
         {{template "body" . }}
     </div>

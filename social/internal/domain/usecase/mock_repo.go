@@ -121,3 +121,18 @@ func (mr *MockUserRepositoryMockRecorder) SetPassword(ctx, password, ID, modify 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetPassword", reflect.TypeOf((*MockUserRepository)(nil).SetPassword), ctx, password, ID, modify)
 }
+
+// GetUsersWithLimitAndOffset mocks base method
+func (m *MockUserRepository) GetUsersWithLimitAndOffset(ctx context.Context, limit, offset int64) ([]*entities.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersWithLimitAndOffset", ctx, limit, offset)
+	ret0, _ := ret[0].([]*entities.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersWithLimitAndOffset indicates an expected call of GetUsersWithLimitAndOffset
+func (mr *MockUserRepositoryMockRecorder) GetUsersWithLimitAndOffset(ctx, limit, offset interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersWithLimitAndOffset", reflect.TypeOf((*MockUserRepository)(nil).GetUsersWithLimitAndOffset), ctx, limit, offset)
+}

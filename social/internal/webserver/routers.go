@@ -20,7 +20,6 @@ type Route struct {
 	HandlerFunc http.HandlerFunc
 }
 
-
 func (s *HttpServer) Routing() []Route {
 	return []Route{
 
@@ -49,6 +48,12 @@ func (s *HttpServer) Routing() []Route {
 			s.Index,
 		},
 		{
+			"logout",
+			"GET",
+			"/logout",
+			s.logOut,
+		},
+		{
 			"login_handler",
 			"POST",
 			"/handler/login",
@@ -62,4 +67,3 @@ func (s *HttpServer) Routing() []Route {
 		},
 	}
 }
-

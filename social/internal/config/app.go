@@ -8,9 +8,9 @@ import (
 
 // Additional conf
 type AppConf struct {
-	Build string `env:"APP_BUILD" envDefault:"dev"`
-	SessionKey string `env:"SESSION_KEY" envDefault:"Auth"`
-	SessionTime int `env:"SESSION_TIME" envDefault:"24"`
+	Build       string `env:"APP_BUILD" envDefault:"dev"`
+	SessionKey  string `env:"SESSION_KEY" envDefault:"Auth"`
+	SessionTime int    `env:"SESSION_TIME" envDefault:"24"`
 }
 
 func NewAppConf() *AppConf {

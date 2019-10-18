@@ -22,9 +22,9 @@ type HttpServer struct {
 }
 
 func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger) *HttpServer {
-	templates:= NewTemplates()
-	sessionProvider:=NewSessionManager(httpConfig.ContextKey, time.Duration(httpConfig.SessionTime))
-	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates, SessionProvider:sessionProvider}
+	templates := NewTemplates()
+	sessionProvider := NewSessionManager(httpConfig.ContextKey, time.Duration(httpConfig.SessionTime))
+	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates, SessionProvider: sessionProvider}
 }
 
 func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, templateName string, date map[string]interface{}) {
@@ -36,15 +36,16 @@ func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, 
 	//tmpl.Funcs(template.FuncMap{
 	//	"User": func() SessionContext { return ctx.Value(s.HttpConfig.ContextKey).(SessionContext)},
 	//})
-    if date == nil {
-    	date =make(map[string]interface{})
+	if date == nil {
+		date = make(map[string]interface{})
 	}
-	date["User"], ok = ctx.Value(s.HttpConfig.ContextKey).(SessionContext)
+	date["Session"], ok = ctx.Value(s.HttpConfig.ContextKey).(SessionContext)
 	if !ok {
 		s.Logger.Error("interface {} is not SessionContext")
 	}
+	fmt.Println("from temp=>",date)
 
-	err := tmpl.ExecuteTemplate(w ,"base",date)
+	err := tmpl.ExecuteTemplate(w, "base", date)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -81,5 +82,3 @@ func (s *HttpServer) Run() {
 		s.Logger.Fatal(err.Error())
 	}
 }
-
-

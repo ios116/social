@@ -5,9 +5,8 @@ import (
 	"path"
 )
 
-
 var funcMap = template.FuncMap{
-	"User":  func() SessionContext {return SessionContext{}},
+	"User": func() SessionContext { return SessionContext{} },
 }
 
 func NewTemplates() map[string]*template.Template {
@@ -19,8 +18,8 @@ func NewTemplates() map[string]*template.Template {
 }
 
 type templateName struct {
-	name string
-	base string
+	name  string
+	base  string
 	child string
 }
 
@@ -29,25 +28,23 @@ func temps() []templateName {
 	return []templateName{
 		{
 			child: path.Join(absPath, "loginForm.html"),
-			base: path.Join(absPath,"base.html"),
-			name: "login",
+			base:  path.Join(absPath, "base.html"),
+			name:  "login",
 		},
 		{
 			child: path.Join(absPath, "registrationForm.html"),
-			base: path.Join(absPath,"base.html"),
-			name: "registration",
+			base:  path.Join(absPath, "base.html"),
+			name:  "registration",
 		},
 		{
 			child: path.Join(absPath, "userProfile.html"),
-			base: path.Join(absPath,"base.html"),
-			name: "profile",
+			base:  path.Join(absPath, "base.html"),
+			name:  "profile",
 		},
 		{
 			child: path.Join(absPath, "index.html"),
-			base: path.Join(absPath,"base.html"),
-			name: "index",
+			base:  path.Join(absPath, "base.html"),
+			name:  "index",
 		},
 	}
 }
-
-

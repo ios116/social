@@ -1,24 +1,17 @@
 {{ define "body"}}
-   <h1>The new Social network</h1>
-
-   <div class="card" style="width: 18rem;">
-      <div class="card-body">
-         <h5 class="card-title">Иван Иванов</h5>
-         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-         <a href="#" class="card-link">profile</a>
-      </div>
-   </div>
-
-
-   <div class="card" style="width: 18rem;">
-      <div class="card-body">
-         <h5 class="card-title">Иван Иванов</h5>
-         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-         <a href="#" class="card-link">profile</a>
-      </div>
-   </div>
+    <h1>The new Social network</h1>
+        <div class="users">
+            {{ range .Users }}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ .FirstName}} {{ .LastName}} - {{.Login}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{.City}}</h6>
+                        <p class="card-text">{{.Interests}}</p>
+                        <a href="/profile/{{ .ID}}" class="card-link">profile</a>
+                    </div>
+                </div>
+            {{end}}
+        </div>
 
 {{end}}
 

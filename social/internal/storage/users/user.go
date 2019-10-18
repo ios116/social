@@ -30,7 +30,6 @@ type UserRole struct {
 }
 
 func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
-	fmt.Println("user====>",user)
 	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?);"
 	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.City, user.Gender, user.Interests, user.DateCreated, user.DateModify, user.FirstName, user.LastName)
 	switch err {
@@ -46,9 +45,6 @@ func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, 
 }
 
 func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error {
-
-	fmt.Println("from sql", user)
-
 	query := "UPDATE users SET login = :login, email = :email, city = :city, gender = :gender, interests = :interests, date_created = :date_created, date_modify = :date_modify,first_name = :first_name, last_name = :last_name  WHERE id=:id"
 
 	result, err := p.Db.NamedExecContext(ctx, query,
@@ -72,7 +68,7 @@ func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error
 		return err
 	}
 	if count == 0 {
-		return exceptions.ObjectDoesNotExist
+		return fmt.Errorf("sql: %s", exceptions.ObjectDoesNotExist)
 	}
 	return nil
 }
@@ -87,7 +83,7 @@ func (p *UserStorage) DeleteUser(ctx context.Context, ID int64) error {
 		return err
 	}
 	if count == 0 {
-		return exceptions.ObjectDoesNotExist
+		return fmt.Errorf("sql: %s", exceptions.ObjectDoesNotExist)
 	}
 	return nil
 }
@@ -101,7 +97,6 @@ func (p *UserStorage) GetUserByLogin(ctx context.Context, login string) (*entiti
 		return nil, err
 	}
 	return toUser(dest), nil
-
 }
 
 func (p *UserStorage) GetUserById(ctx context.Context, ID int64) (*entities.User, error) {
@@ -112,7 +107,7 @@ func (p *UserStorage) GetUserById(ctx context.Context, ID int64) (*entities.User
 	case nil:
 		return toUser(dest), nil
 	case sql.ErrNoRows:
-		return nil, exceptions.ObjectDoesNotExist
+		return nil, fmt.Errorf("sql: %s", exceptions.ObjectDoesNotExist)
 	default:
 		return nil, err
 	}
@@ -129,7 +124,25 @@ func (p *UserStorage) SetPassword(ctx context.Context, password string, ID int64
 		return err
 	}
 	if count == 0 {
-		return exceptions.ObjectDoesNotExist
+		return fmt.Errorf("sql: %s", exceptions.ObjectDoesNotExist)
 	}
 	return nil
+}
+
+func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error) {
+	query := "SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?"
+	rows, err := p.Db.QueryxContext(ctx, query, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	user := &UserDB{}
+	var users []*entities.User
+	for rows.Next() {
+		err := rows.StructScan(user)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, toUser(user))
+	}
+	return users, nil
 }

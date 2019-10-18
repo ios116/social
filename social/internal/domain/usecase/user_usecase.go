@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"social/internal/domain/entities"
 	"social/internal/domain/exceptions"
 	"time"
@@ -16,6 +15,7 @@ type UserService interface {
 	GetUserByLoginUseCase(ctx context.Context, login string) (*entities.User, error)
 	SetPasswordUseCase(ctx context.Context, password string, ID int64) error
 	CheckAuthUseCase(ctx context.Context, login string, password string) (*entities.User, error)
+	GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error)
 }
 
 type Service struct {
@@ -67,7 +67,6 @@ func (s *Service) UpdateUserUseCase(ctx context.Context, user *entities.User) er
 		return err
 	}
 	user.DateModify = time.Now().UTC()
-	fmt.Println("from usecase=>", user)
 	return s.userRepository.UpdateUser(ctx, user)
 }
 
@@ -91,4 +90,7 @@ func (s *Service) SetPasswordUseCase(ctx context.Context, password string, ID in
 	}
 	modify := time.Now().UTC()
 	return s.userRepository.SetPassword(ctx, hash, ID, modify)
+}
+func (s *Service) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error) {
+	return s.userRepository.GetUsersWithLimitAndOffset(ctx, limit, offset)
 }

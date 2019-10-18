@@ -53,7 +53,7 @@ func TestUserStore(t *testing.T) {
 
 	t.Run("UpdateUser", func(t *testing.T) {
 		user.Email = "new@mail.ru"
-		user.Login = "admin"
+		user.Login = "admin3"
 		err := pg.UpdateUser(ctx, user)
 		if err != nil {
 			t.Fatal(err)
@@ -79,6 +79,16 @@ func TestUserStore(t *testing.T) {
 		}
 		if userByID.Password != "new" {
 			t.Fatal("user password is not equal")
+		}
+	})
+
+	t.Run("Select users", func(t *testing.T) {
+		users, err := pg.GetUsersWithLimitAndOffset(ctx,10,0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(users) == 0 {
+			t.Fatal("users must be more then 0")
 		}
 	})
 

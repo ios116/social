@@ -1,3 +1,21 @@
 <{{ define "body"}}
-
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{.User.FirstName}} {{.User.LastName}}</li>
+        </ol>
+    </nav>
+    <div class="card" style="width: 18rem;">
+        <div class="card-header">
+            {{.User.FirstName}} {{.User.LastName}}
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: {{.User.ID}}</li>
+            <li class="list-group-item">City: {{.User.City}}</li>
+            <li class="list-group-item">Login: {{.User.Login}}</li>
+            <li class="list-group-item">Email: {{.User.Email}} </li>
+            <li class="list-group-item">Gender: {{.User.Gender}} </li>
+            <li class="list-group-item">Interest {{.User.Interests }} </li>
+        </ul>
+    </div>
 {{end}}

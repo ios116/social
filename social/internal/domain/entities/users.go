@@ -7,15 +7,15 @@ import (
 )
 
 type User struct {
-	ID        int64
-	Login     string
-	Password  string
-	Email     string
-	FirstName string
-	LastName  string
-	City      string
-	Gender    string
-	Interests string
+	ID          int64
+	Login       string
+	Password    string
+	Email       string
+	FirstName   string
+	LastName    string
+	City        string
+	Gender      string
+	Interests   string
 	DateCreated time.Time
 	DateModify  time.Time
 }
@@ -38,4 +38,5 @@ type UserRepository interface {
 	GetUserById(ctx context.Context, ID int64) (*User, error)
 	GetUserByLogin(ctx context.Context, login string) (*User, error)
 	SetPassword(ctx context.Context, password string, ID int64, modify time.Time) error
+	GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*User, error)
 }

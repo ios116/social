@@ -14,3 +14,9 @@ body {
     max-width: 350px;
     margin: 0 auto;
 }
+
+.users {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}

@@ -22,8 +22,6 @@ func TestUseCase(t *testing.T) {
 		Login:       "Login",
 		Password:    "123456",
 		Email:       "site@mail.ru",
-		IsActive:    false,
-		IsStaff:     false,
 		DateCreated: time.Now().UTC(),
 		DateModify:  time.Now().UTC(),
 	}
@@ -39,13 +37,12 @@ func TestUseCase(t *testing.T) {
 	t.Run("CheckAuthUseCase", func(t *testing.T) {
 		user.Password, _ = HashPassword("123456")
 		repoUser.EXPECT().GetUserByLogin(ctx, "Admin").Return(user, nil).AnyTimes()
-		status, err := service.CheckAuthUseCase(ctx, "Admin", "123456")
+		user, err := service.CheckAuthUseCase(ctx, "Admin", "123456")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if status == false {
-			t.Fatal("Auth not valide")
-		}
+		t.Log(user)
+
 	})
 
 }

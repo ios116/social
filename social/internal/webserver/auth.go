@@ -35,7 +35,7 @@ func (s *SessionManager) DeleteSession(w http.ResponseWriter) {
 // GetSession returning a user id as the string in cookies or returning error
 func (s *SessionManager) GetSession(r *http.Request) (SessionContext, error) {
 	// if no Auth cookie is set then return a 404 not found page
-	sess:=SessionContext{}
+	sess := SessionContext{}
 	cookie, err := r.Cookie(s.SessionKey)
 	if err != nil {
 		return sess, err
@@ -91,7 +91,7 @@ var SigningKey = []byte("salt")
 
 // Claims fo auth
 type Claims struct {
-	ID    int64 `json:"id"`
+	ID    int64  `json:"id"`
 	Login string `json:"login"`
 	jwt.StandardClaims
 }
