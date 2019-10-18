@@ -16,6 +16,7 @@ services:
     volumes:
       - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysqldatadir:/var/lib/mysql
 
   grpc.ru:
     build: ./social
