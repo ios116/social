@@ -23,7 +23,7 @@ func (s *HttpServer) SessionMiddleware(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		userSession, err := s.SessionProvider.GetSession(r)
 		if err != nil {
-			s.Logger.Error(err.Error())
+			s.Logger.Info(err.Error())
 		}
 		ctx := context.WithValue(r.Context(), s.HttpConfig.ContextKey, userSession)
 		r = r.WithContext(ctx)

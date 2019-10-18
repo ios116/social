@@ -24,7 +24,7 @@ services:
       GRPC_HOST: 0.0.0.0
       HTTP_PORT: 8080
       HTTP_HOST: 0.0.0.0
-      APP_BUILD: dev
+      APP_BUILD: prod
       MYSQL_PASSWORD: qwerty
       MYSQL_USER: soc_user
       MYSQL_DATABASE: soc_db
@@ -46,7 +46,7 @@ services:
       GRPC_HOST: grpc.ru
       HTTP_PORT: 8080
       HTTP_HOST: 0.0.0.0
-      APP_BUILD: dev
+      APP_BUILD: prod
       MYSQL_PASSWORD: qwerty
       MYSQL_USER: soc_user
       MYSQL_DATABASE: soc_db
