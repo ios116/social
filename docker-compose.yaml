@@ -55,7 +55,7 @@ services:
     command:  sh -c './wait-for.sh grpc.ru:50051 -- ./main -s web'
     restart: on-failure
     ports:
-      - "8080:8080"
+      - "80:80"
     depends_on:
       - db
     networks:
