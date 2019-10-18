@@ -4,4 +4,4 @@ Tech stack:
 - golang
 - mysql 5.7
 - session JWT
-- bootstrap
+- css bootstrap
