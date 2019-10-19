@@ -30,8 +30,8 @@ type UserRole struct {
 }
 
 func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
-	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?);"
-	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.City, user.Gender, user.Interests, user.DateCreated, user.DateModify, user.FirstName, user.LastName)
+	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name, age) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?,?);"
+	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.City, user.Gender, user.Interests, user.DateCreated, user.DateModify, user.FirstName, user.LastName, user.Age)
 	switch err {
 	case nil:
 		id, err := result.LastInsertId()
@@ -45,7 +45,7 @@ func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, 
 }
 
 func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error {
-	query := "UPDATE users SET login = :login, email = :email, city = :city, gender = :gender, interests = :interests, date_created = :date_created, date_modify = :date_modify,first_name = :first_name, last_name = :last_name  WHERE id=:id"
+	query := "UPDATE users SET login = :login, email = :email, city = :city, gender = :gender, interests = :interests, date_created = :date_created, date_modify = :date_modify,first_name = :first_name, last_name = :last_name, age=:age  WHERE id=:id"
 
 	result, err := p.Db.NamedExecContext(ctx, query,
 		map[string]interface{}{
@@ -59,6 +59,7 @@ func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error
 			"id":           user.ID,
 			"last_name":    user.LastName,
 			"first_name":   user.FirstName,
+			"age":          user.Age,
 		})
 	if err != nil {
 		return err

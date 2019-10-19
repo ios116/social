@@ -16,6 +16,7 @@ type User struct {
 	City        string
 	Gender      string
 	Interests   string
+	Age         int32
 	DateCreated time.Time
 	DateModify  time.Time
 }
