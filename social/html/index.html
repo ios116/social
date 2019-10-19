@@ -4,7 +4,7 @@
             {{ range .Users }}
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ .FirstName}} {{ .LastName}} - {{.Login}}</h5>
+                        <h5 class="card-title">{{ .FirstName}} {{ .LastName}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{.City}}</h6>
                         <p class="card-text">{{.Interests}}</p>
                         <a href="/profile/{{ .ID}}" class="card-link">profile</a>

@@ -21,6 +21,7 @@ type UserDB struct {
 	Interests   sql.NullString
 	DateCreated time.Time `db:"date_created"`
 	DateModify  time.Time `db:"date_modify"`
+	Age int32
 }
 
 type UserRole struct {

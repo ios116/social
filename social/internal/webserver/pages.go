@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"social/internal/domain/entities"
@@ -11,7 +10,7 @@ import (
 
 func (s *HttpServer) Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	users, err := s.UserService.GetUsersWithLimitAndOffset(ctx, 10, 0)
+	users, err := s.UserService.GetUsersWithLimitAndOffset(ctx, 200, 0)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -47,7 +46,6 @@ func (s *HttpServer) userProfile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	fmt.Println("userProfile ====>", user)
 	data := map[string]interface{}{
 		"User": user,
 	}
