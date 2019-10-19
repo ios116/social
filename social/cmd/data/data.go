@@ -38,7 +38,7 @@ func DataForTest() {
 	ctx := context.Background()
 	err := container.Invoke(func(store entities.UserRepository) {
 
-		for i := 0; i < 100000; i++ {
+		for i := 0; i < 1000000; i++ {
 
 			lastName := gofakeit.LastName()
 			firstName := gofakeit.FirstName()
