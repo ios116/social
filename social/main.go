@@ -31,8 +31,6 @@ func maxOpenFiles() {
 		panic(err)
 	}
 	log.Println("Hi " + user.Name + " (id: " + user.Uid + ")")
-	log.Println("Username: " + user.Username)
-	log.Println("Home Dir: " + user.HomeDir)
 
 	var rLimit syscall.Rlimit
 	err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
