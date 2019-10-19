@@ -5,3 +5,6 @@ Tech stack:
 - mysql 5.7
 - session JWT
 - css bootstrap
+
+
+[sql](https://github.com/ios116/social/blob/master/social/sql/setup.sql)
