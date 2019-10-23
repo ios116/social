@@ -43,7 +43,6 @@ func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, 
 	if !ok {
 		s.Logger.Error("interface {} is not SessionContext")
 	}
-	fmt.Println("from temp=>",date)
 
 	err := tmpl.ExecuteTemplate(w, "base", date)
 	if err != nil {
