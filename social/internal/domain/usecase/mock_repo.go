@@ -136,3 +136,18 @@ func (mr *MockUserRepositoryMockRecorder) GetUsersWithLimitAndOffset(ctx, limit,
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersWithLimitAndOffset", reflect.TypeOf((*MockUserRepository)(nil).GetUsersWithLimitAndOffset), ctx, limit, offset)
 }
+
+// FindByName mocks base method
+func (m *MockUserRepository) FindByName(ctx context.Context, firstName, lastName string) ([]*entities.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByName", ctx, firstName, lastName)
+	ret0, _ := ret[0].([]*entities.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByName indicates an expected call of FindByName
+func (mr *MockUserRepositoryMockRecorder) FindByName(ctx, firstName, lastName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByName", reflect.TypeOf((*MockUserRepository)(nil).FindByName), ctx, firstName, lastName)
+}

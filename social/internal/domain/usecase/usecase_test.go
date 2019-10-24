@@ -28,7 +28,7 @@ func TestUseCase(t *testing.T) {
 	}
 
 	t.Run("AddUser", func(t *testing.T) {
-		repoUser.EXPECT().AddUser(ctx, user).Return(24, nil).AnyTimes()
+		repoUser.EXPECT().AddUser(ctx, user).Return(int64(24), nil).AnyTimes()
 		_, err := service.AddUserUseCase(ctx, user)
 		if err != nil {
 			t.Fatal(err)

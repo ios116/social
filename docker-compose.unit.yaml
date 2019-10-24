@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7.27
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    volumes:
+      - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+
+  unit_tests:
+    build:
+      context: ./social
+      dockerfile: Dockerfile.full
+    environment:
+      APP_BUILD: prod
+      MYSQL_PASSWORD: qwerty
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+      MYSQL_PORT: 3306
+      MYSQL_HOST: db
+    command: "true"
+    restart: on-failure
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge

@@ -20,6 +20,20 @@ func (s *HttpServer) Index(w http.ResponseWriter, r *http.Request) {
 	s.RenderTemplate(ctx, w, "index", data)
 }
 
+func (s *HttpServer) Search(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	firstName := r.FormValue("first_name")
+	lastName := r.FormValue("last_name")
+	users, err := s.UserService.FindByNameUC(ctx, firstName, lastName)
+	if err != nil {
+		s.RenderTemplate(ctx, w, "index", nil)
+	}
+	data := map[string]interface{}{
+		"Users": users,
+	}
+	s.RenderTemplate(ctx, w, "index", data)
+}
+
 func (s *HttpServer) loginForm(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	s.RenderTemplate(ctx, w, "login", nil)
