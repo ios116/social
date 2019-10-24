@@ -24,6 +24,7 @@ func TestUseCase(t *testing.T) {
 		Email:       "site@mail.ru",
 		DateCreated: time.Now().UTC(),
 		DateModify:  time.Now().UTC(),
+		Age: 33,
 	}
 
 	t.Run("AddUser", func(t *testing.T) {

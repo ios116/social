@@ -39,7 +39,7 @@ func TestGrpc(t *testing.T) {
 		Password:  "123456",
 		Email:     "site@mail.ru",
 		City:      "kazan",
-		Gender:    "Female",
+		Gender:    "female",
 		FirstName: "Ivanov",
 		LastName:  "Popov",
 	}

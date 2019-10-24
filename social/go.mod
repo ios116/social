@@ -3,6 +3,7 @@ module social
 go 1.13
 
 require (
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/caarlos0/env/v6 v6.1.0
 	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
