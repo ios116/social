@@ -28,7 +28,7 @@ func TestUserStore(t *testing.T) {
 		Password:    "13456",
 		Email:       "site@mail.ru",
 		City:        "Kazan",
-		Gender:      "Female",
+		Gender:      "female",
 		Interests:   "Some interest",
 		DateCreated: time.Now().UTC(),
 		DateModify:  time.Now().UTC(),

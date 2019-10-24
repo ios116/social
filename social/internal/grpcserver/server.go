@@ -106,6 +106,7 @@ func (s *RPCServer) GetUserById(ctx context.Context, in *UserByIdRequest) (*User
 			DateModify:  dateModify,
 			FirstName:   user.FirstName,
 			LastName:    user.LastName,
+			Age:         user.Age,
 		}
 		return &UserResponse{
 			Status: true,
@@ -142,6 +143,7 @@ func (s *RPCServer) UpdateUser(ctx context.Context, in *UpdateUserRequest) (*Sta
 		City:        in.City,
 		Gender:      in.Gender,
 		Interests:   in.Interests,
+		Age:         in.Age,
 	}
 
 	err = s.UserService.UpdateUserUseCase(ctx, user)
@@ -234,6 +236,7 @@ func (s *RPCServer) CheckAuth(ctx context.Context, in *CheckAuthRequest) (*UserR
 			DateModify:  dateModify,
 			FirstName:   user.FirstName,
 			LastName:    user.LastName,
+			Age:         user.Age,
 		}
 		return &UserResponse{
 			Status: true,
