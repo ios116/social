@@ -27,6 +27,8 @@ func TestUserStore(t *testing.T) {
 		Login:       "Admin23",
 		Password:    "13456",
 		Email:       "site@mail.ru",
+		FirstName:   "Tomas",
+		LastName:    "Jonson",
 		City:        "Kazan",
 		Gender:      "female",
 		Interests:   "Some interest",
@@ -83,12 +85,24 @@ func TestUserStore(t *testing.T) {
 	})
 
 	t.Run("Select users", func(t *testing.T) {
-		users, err := pg.GetUsersWithLimitAndOffset(ctx,10,0)
+		users, err := pg.GetUsersWithLimitAndOffset(ctx, 10, 0)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if len(users) == 0 {
 			t.Fatal("users must be more then 0")
+		}
+	})
+
+
+
+	t.Run("Get by name", func(t *testing.T) {
+		users, err := pg.FindByName(ctx, "Tom", "jon")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(users) == 0 {
+			t.Fatal("users must be =  2 ")
 		}
 	})
 
