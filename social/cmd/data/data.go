@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"social/cmd"
 	"social/internal/domain/entities"
+	"social/internal/domain/usecase"
 	"strings"
 	"time"
 )
@@ -36,7 +37,7 @@ func DataForTest() {
 
 	container := cmd.BuildContainer()
 	ctx := context.Background()
-	err := container.Invoke(func(store entities.UserRepository) {
+	err := container.Invoke(func(store usecase.UserService) {
 
 		for i := 0; i < 1000000; i++ {
 
@@ -47,6 +48,7 @@ func DataForTest() {
 			b.WriteString("_")
 			b.WriteString(String(4))
 			gofakeit.Seed(0)
+
 			user := &entities.User{
 				Login:       b.String(),
 				Password:    "123456",
@@ -60,7 +62,8 @@ func DataForTest() {
 				DateModify:  time.Now(),
 				Age:         20 + rand.Int31n(80),
 			}
-			_, err := store.AddUser(ctx, user)
+			fmt.Println(user.ID, user.FirstName, user.LastName)
+			_, err := store.AddUserUseCase(ctx, user)
 			if err != nil {
 				log.Println(err)
 			}
