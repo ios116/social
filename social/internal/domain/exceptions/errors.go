@@ -10,6 +10,7 @@ var (
 	Auth                = DomainError("Password or login is not valid")
 	LoginRequired       = DomainError("Login required")
 	FirstNameRequired       = DomainError("FirstName required")
+	QueryRequired       = DomainError("query required")
 	LastNameRequired       = DomainError("LastName required")
 	EmailRequired       = DomainError("Email required")
 	PasswordRequired    = DomainError("Password required")
