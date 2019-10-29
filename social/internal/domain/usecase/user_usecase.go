@@ -16,7 +16,7 @@ type UserService interface {
 	SetPasswordUseCase(ctx context.Context, password string, ID int64) error
 	CheckAuthUseCase(ctx context.Context, login string, password string) (*entities.User, error)
 	GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error)
-	FindByNameUC(ctx context.Context, query string) ([]*entities.User, error)
+	FindByNameUC(ctx context.Context, query string, id int64, limit int64, direction string) ([]*entities.User, error)
 }
 
 type Service struct {
@@ -96,9 +96,9 @@ func (s *Service) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, o
 	return s.userRepository.GetUsersWithLimitAndOffset(ctx, limit, offset)
 }
 
-func (s *Service) FindByNameUC(ctx context.Context, query string) ([]*entities.User, error) {
+func (s *Service) FindByNameUC(ctx context.Context, query string, id int64, limit int64, direction string) ([]*entities.User, error) {
 	if query == "" {
 		return nil, exceptions.QueryRequired
 	}
-	return s.userRepository.FindByName(ctx, query)
+	return s.userRepository.FindByName(ctx, query,id,limit,direction)
 }
