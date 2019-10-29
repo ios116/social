@@ -148,7 +148,7 @@ func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int6
 	}
 	return users, nil
 }
-
+// SELECT users.id, users.first_name FROM users JOIN (SELECT id FROM users ORDER BY id LIMIT 100000, 30) as b ON b.id = users.id;
 func (p *UserStorage)FindByName(ctx context.Context, q string) ([]*entities.User, error)  {
 	query := "SELECT * FROM users WHERE first_name LIKE ? or last_name LIKE ? ORDER BY id DESC "
 	rows, err := p.Db.QueryxContext(ctx, query, q+"%", q+"%")
