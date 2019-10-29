@@ -9,8 +9,9 @@ func (ee DomainError) Error() string {
 var (
 	Auth                = DomainError("Password or login is not valid")
 	LoginRequired       = DomainError("Login required")
-	FirstNameRequired   = DomainError("FirstName required")
-	LastNameRequired    = DomainError("LastName required")
+	FirstNameRequired       = DomainError("FirstName required")
+	QueryRequired       = DomainError("query required")
+	LastNameRequired       = DomainError("LastName required")
 	EmailRequired       = DomainError("Email required")
 	PasswordRequired    = DomainError("Password required")
 	ObjectDoesNotExist  = DomainError("Object does not exist")

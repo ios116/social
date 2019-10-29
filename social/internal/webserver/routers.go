@@ -54,6 +54,12 @@ func (s *HttpServer) Routing() []Route {
 			s.logOut,
 		},
 		{
+			"search",
+			"GET",
+			"/search",
+			s.Search,
+		},
+		{
 			"login_handler",
 			"POST",
 			"/handler/login",

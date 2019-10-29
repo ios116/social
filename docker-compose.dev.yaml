@@ -17,30 +17,6 @@ services:
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
 
-  grpc.ru:
-    image: social:1.1
-    environment:
-      GRPC_PORT: 50051
-      GRPC_HOST: 0.0.0.0
-      HTTP_PORT: 8080
-      HTTP_HOST: 0.0.0.0
-      APP_BUILD: dev
-      MYSQL_PASSWORD: qwerty
-      MYSQL_USER: soc_user
-      MYSQL_DATABASE: soc_db
-      MYSQL_PORT: 3306
-      MYSQL_HOST: db
-    command: go run main.go -s rpc
-    restart: on-failure
-    volumes:
-      - ./social/:/code
-    ports:
-      - "50051:50051"
-    depends_on:
-      - db
-    networks:
-      - net
-
   rest.ru:
     image: social:1.1
     environment:

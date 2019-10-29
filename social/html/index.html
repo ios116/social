@@ -1,16 +1,32 @@
 {{ define "body"}}
-        <div class="users">
-            {{ range .Users }}
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ .FirstName}} {{ .LastName}}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{.City}}</h6>
-                        <p class="card-text">{{.Interests}}</p>
-                        <a href="/profile/{{ .ID}}" class="card-link">profile</a>
-                    </div>
-                </div>
-            {{end}}
-        </div>
+    {{ if ne .Errors "" }}
+       <div class="alert alert-danger"> {{.Errors }}</div>
+    {{end}}
+    <div class="users">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>first name</th>
+                    <th>last name</th>
+                    <th>city</th>
+                    <th>profile</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ range .Users }}
+                <tr>
+                    <td>{{ .ID}}</td>
+                    <td>{{ .FirstName}} </td>
+                    <td>{{ .LastName}}</td>
+                    <td>{{.City}}</td>
+                    <td> <a href="/profile/{{ .ID}}" class="card-link">profile</a></td>
+                </tr>
+                {{end}}
+                </tbody>
+            </table>
+    </div>
+
 
 {{end}}
 
