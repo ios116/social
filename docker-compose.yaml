@@ -31,7 +31,7 @@ services:
       MYSQL_DATABASE: soc_db
       MYSQL_PORT: 3306
       MYSQL_HOST: db
-    command:  sh -c './wait-for.sh grpc.ru:50051 -- ./main -s web'
+    command:  sh -c './wait-for.sh db:3306 -- ./main -s web'
     restart: on-failure
     ports:
       - "80:80"
