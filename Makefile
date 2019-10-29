@@ -23,3 +23,6 @@ image:
 
 test_data:
 	docker-compose run --rm db mysql -u root -h db --password=123456 soc_db < dump_users.sql
+
+mysql:
+	docker exec -it social_db_1 mysql -p -u root soc_db

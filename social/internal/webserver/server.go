@@ -15,16 +15,15 @@ import (
 type HttpServer struct {
 	UserService     usecase.UserService
 	HttpConfig      *config.HttpConf
-	GrpcConfig      *config.GrpcConf
 	Logger          *zap.Logger
 	Templates       map[string]*template.Template
 	SessionProvider SessionProvider
 }
 
-func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, grpcConfig *config.GrpcConf, logger *zap.Logger) *HttpServer {
+func NewHttpServer(userService usecase.UserService, httpConfig *config.HttpConf, logger *zap.Logger) *HttpServer {
 	templates := NewTemplates()
 	sessionProvider := NewSessionManager(httpConfig.ContextKey, time.Duration(httpConfig.SessionTime))
-	return &HttpServer{UserService: userService, HttpConfig: httpConfig, GrpcConfig: grpcConfig, Logger: logger, Templates: templates, SessionProvider: sessionProvider}
+	return &HttpServer{UserService: userService, HttpConfig: httpConfig, Logger: logger, Templates: templates, SessionProvider: sessionProvider}
 }
 
 func (s *HttpServer) RenderTemplate(ctx context.Context, w http.ResponseWriter, templateName string, date map[string]interface{}) {
