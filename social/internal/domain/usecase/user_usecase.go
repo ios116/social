@@ -4,6 +4,7 @@ import (
 	"context"
 	"social/internal/domain/entities"
 	"social/internal/domain/exceptions"
+	"sort"
 	"time"
 )
 
@@ -100,5 +101,11 @@ func (s *Service) FindByNameUC(ctx context.Context, query string, id int64, limi
 	if query == "" {
 		return nil, exceptions.QueryRequired
 	}
-	return s.userRepository.FindByName(ctx, query,id,limit,direction)
+	users, err :=s.userRepository.FindByName(ctx, query,id,limit,direction)
+	if direction == "prev" {
+		sort.Slice(users, func(i, j int) bool {
+		  return users[i].ID < users[j].ID
+		})
+	}
+	return users, err
 }

@@ -1,32 +1,31 @@
 {{ define "body"}}
     {{ if ne .Errors "" }}
-       <div class="alert alert-danger"> {{.Errors }}</div>
+        <div class="alert alert-danger"> {{.Errors }}</div>
     {{end}}
     <div class="users">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>id</th>
-                    <th>first name</th>
-                    <th>last name</th>
-                    <th>city</th>
-                    <th>profile</th>
-                </tr>
-                </thead>
-                <tbody>
-                {{ range .Users }}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>first name</th>
+                <th>last name</th>
+                <th>city</th>
+                <th>profile</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{ range .Users }}
                 <tr>
                     <td>{{ .ID}}</td>
                     <td>{{ .FirstName}} </td>
                     <td>{{ .LastName}}</td>
                     <td>{{.City}}</td>
-                    <td> <a href="/profile/{{ .ID}}" class="card-link">profile</a></td>
+                    <td><a href="/profile/{{.ID}}" class="card-link">profile</a></td>
                 </tr>
-                {{end}}
-                </tbody>
-            </table>
+            {{end}}
+            </tbody>
+        </table>
     </div>
-
-
+    <a href="/search?id={{.FirstID}}&direction=prev&query={{.Query}}" class="btn btn-secondary">prev</a>
+    <a href="/search?id={{.LastID}}&direction=next&query={{.Query}}" class="btn btn-secondary">next</a>
 {{end}}
-
