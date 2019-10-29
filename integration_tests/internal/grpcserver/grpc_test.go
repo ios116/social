@@ -49,8 +49,8 @@ func TestGrpc(t *testing.T) {
 			Login:     user.Login,
 			Password:  user.Password,
 			Email:     user.Email,
-		    City: user.City,
-			Gender: user.Gender,
+			City:      user.City,
+			Gender:    user.Gender,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 		}
@@ -81,9 +81,9 @@ func TestGrpc(t *testing.T) {
 
 	t.Run("update", func(t *testing.T) {
 		userUpdate := &UpdateUserRequest{
-			UserId:      user.UserId,
-			Login:       user.Login,
-			Email:       user.Email,
+			UserId: user.UserId,
+			Login:  user.Login,
+			Email:  user.Email,
 			Gender: user.Gender,
 
 			DateCreated: user.DateCreated,

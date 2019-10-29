@@ -96,12 +96,12 @@ func (s *Service) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, o
 	return s.userRepository.GetUsersWithLimitAndOffset(ctx, limit, offset)
 }
 
-func (s *Service)FindByNameUC(ctx context.Context, firstName string, lastName string) ([]*entities.User, error) {
-	 if firstName == "" {
-	 	return nil, exceptions.FirstNameRequired
-	 }
-	 if lastName == "" {
+func (s *Service) FindByNameUC(ctx context.Context, firstName string, lastName string) ([]*entities.User, error) {
+	if firstName == "" {
+		return nil, exceptions.FirstNameRequired
+	}
+	if lastName == "" {
 		return nil, exceptions.LastNameRequired
 	}
-     return s.userRepository.FindByName(ctx, firstName, lastName)
+	return s.userRepository.FindByName(ctx, firstName, lastName)
 }

@@ -69,7 +69,7 @@ func DataForTest() {
 			}
 			fmt.Println("iteration= ", i)
 		}
-	});
+	})
 	if err != nil {
 		log.Println(err)
 	}

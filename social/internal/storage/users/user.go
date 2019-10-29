@@ -149,7 +149,7 @@ func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int6
 	return users, nil
 }
 
-func (p *UserStorage)FindByName(ctx context.Context, firstName string, lastName string) ([]*entities.User, error)  {
+func (p *UserStorage) FindByName(ctx context.Context, firstName string, lastName string) ([]*entities.User, error) {
 	query := "SELECT * FROM users WHERE first_name LIKE ? and last_name LIKE ? ORDER BY id DESC "
 	rows, err := p.Db.QueryxContext(ctx, query, firstName+"%", lastName+"%")
 	if err != nil {
