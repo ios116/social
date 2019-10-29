@@ -131,6 +131,7 @@ func (p *UserStorage) SetPassword(ctx context.Context, password string, ID int64
 	return nil
 }
 
+//
 func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error) {
 	query := "SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?"
 	rows, err := p.Db.QueryxContext(ctx, query, limit, offset)
@@ -148,14 +149,22 @@ func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int6
 	}
 	return users, nil
 }
-// SELECT users.id, users.first_name FROM users JOIN (SELECT id FROM users ORDER BY id LIMIT 100000, 30) as b ON b.id = users.id;
-func (p *UserStorage)FindByName(ctx context.Context, q string) ([]*entities.User, error)  {
-	query := "SELECT * FROM users WHERE first_name LIKE ? or last_name LIKE ? ORDER BY id DESC "
-	rows, err := p.Db.QueryxContext(ctx, query, q+"%", q+"%")
+
+// FindByName find users by first_name and last_name
+// for example if prev - select id, first_name from users where id<=800060 order by id DESC limit 11;
+// for example if next - select id, first_name from users where id>=800060 order by id ASC limit 11;
+func (p *UserStorage) FindByName(ctx context.Context, q string, id int64, limit int64, direction string) ([]*entities.User, error) {
+	var query = ""
+	if direction == "prev" {
+		query = "SELECT id, first_name, last_name, city FROM users WHERE id<? AND first_name LIKE ? or last_name LIKE ? ORDER BY id DESC LIMIT ?"
+	} else {
+
+		query = "SELECT id, first_name, last_name, city FROM users WHERE id>=? AND first_name LIKE ? or last_name LIKE ? ORDER BY id ASC LIMIT ?"
+	}
+	rows, err := p.Db.QueryxContext(ctx, query, id, q+"%", q+"%", limit)
 	if err != nil {
 		return nil, err
 	}
-
 	user := &UserDB{}
 	var users []*entities.User
 	for rows.Next() {

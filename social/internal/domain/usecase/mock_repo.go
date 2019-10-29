@@ -147,6 +147,7 @@ func (m *MockUserRepository) FindByName(ctx context.Context, query string) ([]*e
 }
 
 // FindByName indicates an expected call of FindByName
+
 func (mr *MockUserRepositoryMockRecorder) FindByName(ctx, query interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByName", reflect.TypeOf((*MockUserRepository)(nil).FindByName), ctx, query)

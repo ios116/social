@@ -9,12 +9,6 @@ down:
 
 restart: down up
 
-integration_test:
-	test_status=0;\
-	docker-compose -f docker-compose.test.yaml up --build -d;\
-	docker-compose -f docker-compose.test.yaml run integration_tests go test -v -count=1 ./... || test_status=$$?;\
-	docker-compose -f docker-compose.test.yaml down; echo "status="$$test_status;exit $$test_status;
-
 unit_test:
 	test_status=0;\
 	docker-compose -f docker-compose.unit.yaml up --build -d;\
@@ -29,3 +23,6 @@ image:
 
 test_data:
 	docker-compose run --rm db mysql -u root -h db --password=123456 soc_db < dump_users.sql
+
+mysql:
+	docker exec -it social_db_1 mysql -p -u root soc_db

@@ -40,5 +40,5 @@ type UserRepository interface {
 	GetUserByLogin(ctx context.Context, login string) (*User, error)
 	SetPassword(ctx context.Context, password string, ID int64, modify time.Time) error
 	GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*User, error)
-	FindByName(ctx context.Context, query string, limit int32, id int64) ([]*User, error)
+	FindByName(ctx context.Context, q string, id int64,limit int64, direction string) ([]*User, error)
 }

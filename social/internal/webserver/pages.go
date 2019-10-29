@@ -4,10 +4,12 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"social/internal/domain/entities"
+	"social/internal/domain/exceptions"
 	"strconv"
 	"strings"
 )
 
+// Index - main page
 func (s *HttpServer) Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	users, err := s.UserService.GetUsersWithLimitAndOffset(ctx, 200, 0)
@@ -15,29 +17,57 @@ func (s *HttpServer) Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	data := map[string]interface{}{
-		"Users": users,
-		"Errors":"",
+		"Users":  users,
+		"Errors": "",
 	}
 	s.RenderTemplate(ctx, w, "index", data)
 }
 
+// Search by first name and last name with limit
 func (s *HttpServer) Search(w http.ResponseWriter, r *http.Request) {
+
 	ctx := r.Context()
-	query := r.FormValue("query")
-	users, err := s.UserService.FindByNameUC(ctx, query)
-	data := map[string]interface{}{
-		"Users": users,
-		"Errors":"",
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		id="0"
 	}
+	id64, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		http.Error(w, exceptions.IntegerRequired.Error(), 500)
+		return
+	}
+
+	direction := r.URL.Query().Get("direction")
+
+	query := r.FormValue("query")
+	users, err := s.UserService.FindByNameUC(ctx, query, id64, 21, direction)
+	var firstID, lastID int64
+
+	data := map[string]interface{}{
+		"Users":  users,
+		"Errors": "",
+		"Query":  query,
+	}
+
 	if err != nil {
 		data["Errors"] = err.Error()
 		s.RenderTemplate(ctx, w, "index", data)
 		return
 	}
 
+	if len(users) > 0 {
+		lastID = users[len(users)-1].ID
+		firstID = users[0].ID
+	}
+
+	data["FirstID"] = firstID
+	data["LastID"] = lastID
+
 	s.RenderTemplate(ctx, w, "index", data)
+
 }
 
+// loginForm user enter credentials
 func (s *HttpServer) loginForm(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	s.RenderTemplate(ctx, w, "login", nil)
