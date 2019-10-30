@@ -6,7 +6,7 @@
 ```mysql
 explain SELECT id, first_name, last_name, city FROM users WHERE id>22481 AND (first_name LIKE 'tom%' or last_name LIKE 'tom%') ORDER BY id ASC LIMIT 201;
 ```
-```bash script
+```shell script
 +----+-------------+-------+------------+-------+---------------+---------+---------+------+--------+----------+-------------+
 | id | select_type | table | partitions | type  | possible_keys | key     | key_len | ref  | rows   | filtered | Extra       |
 +----+-------------+-------+------------+-------+---------------+---------+---------+------+--------+----------+-------------+
@@ -62,7 +62,7 @@ create index f on users(first_name);
 create index l on users(last_name);
 explain SELECT id, first_name, last_name, city FROM users WHERE id>22481 AND (first_name LIKE 'tom%' or last_name LIKE 'tom%') ORDER BY id ASC LIMIT 201;
 ```
-```bash script
+```shell script
 +----+-------------+-------+------------+-------------+----------------+------+---------+------+------+----------+----------------------------------------------------+
 | id | select_type | table | partitions | type        | possible_keys  | key  | key_len | ref  | rows | filtered | Extra                                              |
 +----+-------------+-------+------------+-------------+----------------+------+---------+------+------+----------+----------------------------------------------------+
