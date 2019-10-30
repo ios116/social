@@ -26,6 +26,7 @@
             </tbody>
         </table>
     </div>
-    <a href="/search?id={{.FirstID}}&direction=prev&query={{.Query}}" class="btn btn-secondary">prev</a>
-    <a href="/search?id={{.LastID}}&direction=next&query={{.Query}}" class="btn btn-secondary">next</a>
+     {{if .Next }}
+         <a href="/search?id={{.LastID}}&direction=next&query={{.Query}}" class="btn btn-secondary">next</a>
+     {{end}}
 {{end}}

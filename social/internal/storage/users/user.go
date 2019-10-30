@@ -156,10 +156,10 @@ func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int6
 func (p *UserStorage) FindByName(ctx context.Context, q string, id int64, limit int64, direction string) ([]*entities.User, error) {
 	var query = ""
 	if direction == "prev" {
-		query = "SELECT id, first_name, last_name, city FROM users WHERE id<? AND first_name LIKE ? or last_name LIKE ? ORDER BY id DESC LIMIT ?"
+		query = "SELECT id, first_name, last_name, city FROM users WHERE id<? AND (first_name LIKE ? or last_name LIKE ?) ORDER BY id DESC LIMIT ?"
 	} else {
 
-		query = "SELECT id, first_name, last_name, city FROM users WHERE id>=? AND first_name LIKE ? or last_name LIKE ? ORDER BY id ASC LIMIT ?"
+		query = "SELECT id, first_name, last_name, city FROM users WHERE id>? AND (first_name LIKE ? or last_name LIKE ?) ORDER BY id ASC LIMIT ?"
 	}
 	rows, err := p.Db.QueryxContext(ctx, query, id, q+"%", q+"%", limit)
 	if err != nil {

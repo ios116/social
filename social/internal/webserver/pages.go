@@ -25,11 +25,12 @@ func (s *HttpServer) Index(w http.ResponseWriter, r *http.Request) {
 
 // Search by first name and last name with limit
 func (s *HttpServer) Search(w http.ResponseWriter, r *http.Request) {
-
+	var limit int64 = 201
 	ctx := r.Context()
 	id := r.URL.Query().Get("id")
+
 	if id == "" {
-		id="0"
+		id = "0"
 	}
 	id64, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
@@ -40,31 +41,32 @@ func (s *HttpServer) Search(w http.ResponseWriter, r *http.Request) {
 	direction := r.URL.Query().Get("direction")
 
 	query := r.FormValue("query")
-	users, err := s.UserService.FindByNameUC(ctx, query, id64, 21, direction)
+	users, err := s.UserService.FindByNameUC(ctx, query, id64, limit, direction)
 	var firstID, lastID int64
 
 	data := map[string]interface{}{
 		"Users":  users,
 		"Errors": "",
 		"Query":  query,
+		"Next" : false,
 	}
-
 	if err != nil {
 		data["Errors"] = err.Error()
 		s.RenderTemplate(ctx, w, "index", data)
 		return
 	}
-
-	if len(users) > 0 {
-		lastID = users[len(users)-1].ID
+	count := int64(len(users))
+	if count > 0 {
+		lastID = users[count-1].ID
 		firstID = users[0].ID
+		data["Users"]=users[:count-1]
 	}
-
 	data["FirstID"] = firstID
 	data["LastID"] = lastID
-
+	if count > limit-1 {
+		data["Next"] = true
+	}
 	s.RenderTemplate(ctx, w, "index", data)
-
 }
 
 // loginForm user enter credentials
