@@ -111,9 +111,7 @@ explain SELECT id, first_name, last_name, city FROM users WHERE id>22481 AND (fi
   }
 }
 ```
-[wrk tests без индекса](https://github.com/ios116/social/blob/master/social/assets/index_no)
-
-[wrk tests с индексом](https://github.com/ios116/social/blob/master/social/assets/index_yes)
+[wrk tests без индекса](https://github.com/ios116/social/blob/master/social/assets/index_no) | [wrk tests с индексом](https://github.com/ios116/social/blob/master/social/assets/index_yes)
 
 ![latency](social/assets/img/latency.png)
 
