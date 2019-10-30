@@ -1,36 +1,37 @@
-Running 20s test @ http://212.109.223.229/search?id=77506&query=To
+Running 1m test @ http://212.109.223.229/search?id=22481&direction=next&query=tom
   1 threads and 1 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     7.68ms    5.20ms  75.68ms   91.12%
-    Req/Sec   142.15     43.82   190.00     80.00%
-  2840 requests in 20.04s, 24.29MB read
-Requests/sec:    141.69
-Transfer/sec:      1.21MB
+    Latency    20.82ms   27.13ms 498.50ms   98.64%
+    Req/Sec    54.67      8.28    70.00     85.14%
+  3251 requests in 1.00m, 189.17MB read
+Requests/sec:     54.13
+Transfer/sec:      3.15MB
 
-Running 20s test @ http://212.109.223.229/search?id=77506&query=To
+Running 1m test @ http://212.109.223.229/search?id=22481&direction=next&query=tom
   10 threads and 10 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    18.53ms    7.82ms  82.82ms   73.33%
-    Req/Sec    54.54     12.25    90.00     59.75%
-  10922 requests in 20.07s, 93.42MB read
-Requests/sec:    544.23
-Transfer/sec:      4.66MB
+    Latency    75.40ms   30.58ms 614.79ms   81.13%
+    Req/Sec    13.67      5.12    40.00     60.35%
+  8053 requests in 1.00m, 468.61MB read
+Requests/sec:    134.06
+Transfer/sec:      7.80MB
 
-Running 20s test @ http://212.109.223.229/search?id=77506&query=To
+Running 1m test @ http://212.109.223.229/search?id=22481&direction=next&query=tom
   10 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   164.00ms   89.23ms   1.02s    76.26%
-    Req/Sec    62.89     20.37   121.00     66.89%
-  12528 requests in 20.03s, 107.15MB read
-Requests/sec:    625.36
-Transfer/sec:      5.35MB
+    Latency   710.20ms  360.50ms   2.00s    69.63%
+    Req/Sec    15.91     10.00    70.00     71.65%
+  8364 requests in 1.00m, 487.29MB read
+  Socket errors: connect 0, read 0, write 0, timeout 70
+Requests/sec:    139.17
+Transfer/sec:      8.11MB
 
-Running 20s test @ http://212.109.223.229/search?id=77506&query=To
+Running 1m test @ http://212.109.223.229/search?id=22481&direction=next&query=tom
   16 threads and 1000 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   448.33ms  416.81ms   1.99s    83.61%
-    Req/Sec    54.57     33.14   310.00     68.15%
-  16706 requests in 20.09s, 113.81MB read
-  Socket errors: connect 0, read 0, write 0, timeout 1855
-Requests/sec:    831.57
-Transfer/sec:      5.67MB
+    Latency   605.95ms  537.81ms   2.00s    64.57%
+    Req/Sec    38.10     32.77   292.00     83.49%
+  32735 requests in 1.00m, 476.48MB read
+  Socket errors: connect 0, read 0, write 0, timeout 6776
+Requests/sec:    544.76
+Transfer/sec:      7.93MB
