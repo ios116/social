@@ -1,5 +1,32 @@
 ## Social network 
 
+### Task3
+
+Конфигурация master
+```
+# ID сервера
+server_id=1
+#включает GTID
+gtid_mode=ON
+log_bin=mysql-bin
+log-slave-updates
+enforce-gtid-consistency
+# название базы данных, которая будет реплицироваться
+binlog_do_db = soc_db
+```
+
+Конфигурация slave
+```
+server-id=2
+gtid_mode=ON
+enforce-gtid-consistency
+# Включаем хранение информации о логах через служебные таблицы, а не через файлы
+master-info-repository = TABLE
+relay-log-info-repository = TABLE
+binlog_do_db = soc_db
+```
+
+
 ### Task2
 
 **Без индекса**

@@ -15,7 +15,7 @@ services:
       - "3306:3306"
     volumes:
       - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql.conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql-datadir:/var/lib/mysql
 
   rest.ru:
