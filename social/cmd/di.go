@@ -20,11 +20,11 @@ func CastToUseService(c *usecase.Service) usecase.UserService {
 }
 
 func Connection(master *config.DateBaseConf, slave *config.SlaveConf) *users.UserStorage {
-	connMaster, err := config.SlaveConnection(slave)
+	connMaster, err := config.DBConnection(master)
 	if err != nil {
 		log.Fatal(err)
 	}
-	connSlave, err := config.DBConnection(master)
+	connSlave, err := config.SlaveConnection(slave)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,10 +41,8 @@ func BuildContainer() *dig.Container {
 	container.Provide(config.NewDateBaseConf)
 	// slave config
 	container.Provide(config.NewSlaveConf)
-
 	// connection to date base
 	container.Provide(Connection)
-
 	// cast db to interface
 	container.Provide(CastToUserRepository)
 	// HTTP config
