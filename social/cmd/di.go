@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"go.uber.org/dig"
+	"log"
 	"social/internal/config"
 	"social/internal/domain/entities"
 	"social/internal/domain/usecase"
 	"social/internal/storage/users"
+
 	"social/internal/webserver"
 )
 
@@ -17,6 +19,18 @@ func CastToUseService(c *usecase.Service) usecase.UserService {
 	return usecase.UserService(c)
 }
 
+func Connection(master *config.DateBaseConf, slave *config.SlaveConf) *users.UserStorage {
+	connMaster, err := config.SlaveConnection(slave)
+	if err != nil {
+		log.Fatal(err)
+	}
+	connSlave, err := config.DBConnection(master)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return users.NewUserStorage(connMaster, connSlave)
+}
+
 func BuildContainer() *dig.Container {
 	container := dig.New()
 	// app config
@@ -25,10 +39,12 @@ func BuildContainer() *dig.Container {
 	container.Provide(config.CreateLogger)
 	// DB config
 	container.Provide(config.NewDateBaseConf)
-	// create DB connection
-	container.Provide(config.DBConnection)
-	// create user storage
-	container.Provide(users.NewUserStorage)
+	// slave config
+	container.Provide(config.NewSlaveConf)
+
+	// connection to date base
+	container.Provide(Connection)
+
 	// cast db to interface
 	container.Provide(CastToUserRepository)
 	// HTTP config

@@ -18,11 +18,21 @@ unit_test:
 dev:
 	docker-compose -f docker-compose.dev.yaml up -d
 
+dev_stop:
+	docker-compose -f docker-compose.dev.yaml stop
+
+
 image:
 	docker build -f ./social/Dockerfile.full -t social:1.1 ./social
 
-test_data:
-	docker-compose run --rm db mysql -u root -h db --password=123456 soc_db < dump_users.sql
+dump:
+	docker exec master mysqldump -u root --password='123456' soc_db > dump_users.sql
 
-mysql:
-	docker exec -it social_db_1 mysql -p -u root soc_db
+restore:
+	docker-compose run --rm master mysql -u root -h master --password=123456 soc_db < dump_users.sql
+
+master:
+	docker exec -it master mysql -p -u root soc_db
+
+slave:
+	docker exec -it slave mysql -p -u root soc_db

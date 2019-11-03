@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db:
+  master:
     image: mysql:5.7.27
     environment:
       MYSQL_PASSWORD: qwerty
@@ -11,8 +11,8 @@ services:
     networks:
       - net
     volumes:
-      - ./social/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
 
   unit_tests:
     build:
@@ -20,11 +20,13 @@ services:
       dockerfile: Dockerfile.full
     environment:
       APP_BUILD: prod
-      MYSQL_PASSWORD: qwerty
-      MYSQL_USER: soc_user
-      MYSQL_DATABASE: soc_db
-      MYSQL_PORT: 3306
-      MYSQL_HOST: db
+
+      MASTER_PASSWORD: qwerty
+      MASTER_USER: soc_user
+      MASTER_DATABASE: soc_db
+      MASTER_PORT: 3306
+      MASTER_HOST: master
+
     command: "true"
     restart: on-failure
     networks:

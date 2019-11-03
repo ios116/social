@@ -16,6 +16,12 @@ CREATE TABLE IF NOT EXISTS `users`
     `last_name`    varchar(255),
     `date_created` datetime     NOT NULL default NOW(),
     `date_modify`  datetime     NOT NULL default NOW(),
-    check (gender in ('male', 'female', 'Unknown'))
+    check (gender in ('male', 'female', 'Unknown')),
+    KEY `f` (`first_name`),
+    KEY `l` (`last_name`)
 );
+
 COMMIT;
+
+GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
+FLUSH PRIVILEGES;

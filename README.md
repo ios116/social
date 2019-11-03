@@ -1,5 +1,18 @@
 ## Social network 
 
+### TASK3
+
+GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
+FLUSH PRIVILEGES;
+SHOW MASTER STATUS;
+
+
+ CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
+ START SLAVE;
+show slave status \G 
+
+INSERT INTO users (login,password,email,age,city,gender, first_name,last_name)  VALUE('admin5','fddf','site116@gmail.com',0,'ddd','male','dd','ddd');
+
 ### Task2
 
 **Без индекса**
