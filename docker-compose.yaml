@@ -3,6 +3,7 @@ services:
 
   master:
     image: mysql:5.7.27
+    container_name: master
     environment:
       MYSQL_PASSWORD: qwerty
       MYSQL_ROOT_PASSWORD: 123456
@@ -20,6 +21,7 @@ services:
 
   slave:
     image: mysql:5.7.27
+    container_name: slave
     environment:
       MYSQL_PASSWORD: qwerty
       MYSQL_ROOT_PASSWORD: 123456
@@ -37,6 +39,7 @@ services:
 
   web.ru:
     build: ./social
+    container_name: web
     environment:
 
       HTTP_PORT: 80
