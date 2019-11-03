@@ -16,7 +16,7 @@ services:
     volumes:
       - ./mysql-conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql-conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      #- ./mysql-datadir/master:/var/lib/mysql
+      - ./mysql-datadir/master:/var/lib/mysql
 
   slave:
     image: mysql:5.7.27
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./mysql-conf/slave/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql-conf/slave/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-     # - ./mysql-datadir/slave:/var/lib/mysql
+      - ./mysql-datadir/slave:/var/lib/mysql
 
   web.ru:
     build: ./social
