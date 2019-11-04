@@ -2,6 +2,11 @@
 
 ### TASK3
 
+
+![master](social/assets/img/rep_master.png)
+
+![slave](social/assets/img/rep_slave.png)
+
 GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
 FLUSH PRIVILEGES;
 SHOW MASTER STATUS;
