@@ -2,21 +2,32 @@
 
 ### TASK3
 
+**Добавить m/s репликацию. Сделать балансирование запросов на чтение. Провести нагрузочное тестирование**
+
+- конфиг мастера [master](social/blob/master/mysql-conf/master/mysql.cnf)
+- конфиг слейва [slave](social/blob/master/mysql-conf/slave/mysql.cnf)
+
+На мастере создан пользователь для реплики
+```mysql
+GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
+FLUSH PRIVILEGES;
+```
+На слейве указываем мастер
+```mysql
+CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
+START SLAVE;
+```
+
+Нагрузка на чтение
+```wrk -c 200 -t 16 -d 30s "http://212.109.223.229/search?query=Tomas"```
+
+1) В случае где запросы на чтение идут на master:
 
 ![master](social/assets/img/rep_master.png)
 
-![slave](social/assets/img/rep_slave.png)
+2) 1) В случае где запросы на чтение идут на slave
 
-GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
-FLUSH PRIVILEGES;
-SHOW MASTER STATUS;
-
-
- CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
- START SLAVE;
-show slave status \G 
-
-INSERT INTO users (login,password,email,age,city,gender, first_name,last_name)  VALUE('admin5','fddf','site116@gmail.com',0,'ddd','male','dd','ddd');
+![slave](social/assets/img/rep_slave.png) 
 
 ### Task2
 
