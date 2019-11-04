@@ -4,8 +4,26 @@
 
 **Добавить m/s репликацию. Сделать балансирование запросов на чтение. Провести нагрузочное тестирование**
 
-- конфиг мастера [master](social/blob/master/mysql-conf/master/mysql.cnf)
-- конфиг слейва [slave](social/blob/master/mysql-conf/slave/mysql.cnf)
+- конфиг мастера
+```
+# master
+server-id = 1 # идентификатор мастер сервера
+binlog_do_db = soc_db # база для репликации
+gtid_mode=ON # включает GTID
+binlog_format = ROW # формат ведения журнала row base
+log_bin=mysql-bin # Ведение бинарного лога для мастера (с него читает слейв).
+enforce-gtid-consistency=ON
+```
+- конфиг слейва
+```
+#salve
+binlog_do_db = soc_db # база для репликации
+server_id = 2  # идентификатор slave сервера
+binlog_format = ROW # формат ведения журнала row base
+gtid_mode = on # GTID mod
+enforce_gtid_consistency
+read-only=on # только в режиме чтения
+```
 
 На мастере создан пользователь для реплики
 ```mysql
@@ -25,7 +43,7 @@ START SLAVE;
 
 ![master](social/assets/img/rep_master.png)
 
-2) 1) В случае где запросы на чтение идут на slave
+2) В случае где запросы на чтение идут на slave
 
 ![slave](social/assets/img/rep_slave.png) 
 
