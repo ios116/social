@@ -94,7 +94,7 @@ func (p *UserStorage) GetUserByLogin(ctx context.Context, login string) (*entiti
 
 	query := "SELECT * FROM users WHERE login=?"
 	dest := &UserDB{}
-	err := p.Db.GetContext(ctx, dest, query, login)
+	err := p.DbSlave.GetContext(ctx, dest, query, login)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (p *UserStorage) GetUserByLogin(ctx context.Context, login string) (*entiti
 func (p *UserStorage) GetUserById(ctx context.Context, ID int64) (*entities.User, error) {
 	query := "SELECT * FROM users WHERE id=?"
 	dest := &UserDB{}
-	err := p.Db.GetContext(ctx, dest, query, ID)
+	err := p.DbSlave.GetContext(ctx, dest, query, ID)
 	switch err {
 	case nil:
 		return toUser(dest), nil
@@ -134,7 +134,7 @@ func (p *UserStorage) SetPassword(ctx context.Context, password string, ID int64
 //
 func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error) {
 	query := "SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?"
-	rows, err := p.Db.QueryxContext(ctx, query, limit, offset)
+	rows, err := p.DbSlave.QueryxContext(ctx, query, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +161,7 @@ func (p *UserStorage) FindByName(ctx context.Context, q string, id int64, limit 
 
 		query = "SELECT id, first_name, last_name, city FROM users WHERE id>? AND (first_name LIKE ? or last_name LIKE ?) ORDER BY id ASC LIMIT ?"
 	}
-	rows, err := p.Db.QueryxContext(ctx, query, id, q+"%", q+"%", limit)
+	rows, err := p.DbSlave.QueryxContext(ctx, query, id, q+"%", q+"%", limit)
 	if err != nil {
 		return nil, err
 	}
