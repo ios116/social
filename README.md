@@ -36,6 +36,11 @@ CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'sla
 START SLAVE;
 ```
 
+**В коде**
+
+Создано два подключения к [master и slave](https://github.com/ios116/social/tree/master/social/internal/config)
+Запрос на чтение берет конфиг именно [слейва](https://github.com/ios116/social/blob/master/social/internal/storage/users/user.go#L164) 
+
 Нагрузка на чтение
 ```wrk -c 200 -t 16 -d 30s "http://212.109.223.229/search?query=Tomas"```
 
