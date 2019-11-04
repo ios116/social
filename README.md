@@ -30,7 +30,7 @@ read-only=on # только в режиме чтения
 GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
 FLUSH PRIVILEGES;
 ```
-На слейве указываем мастер
+На слейве указан мастер
 ```mysql
 CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
 START SLAVE;
