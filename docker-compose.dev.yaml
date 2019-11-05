@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  db:
+  master:
     image: mysql:5.7.27
     container_name: master
     environment:
@@ -15,16 +15,15 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./mysql.conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-      - ./mysql.conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-
+      - ./mysql-conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
   slave:
     image: mysql:5.7.27
     container_name: slave
     environment:
       MYSQL_PASSWORD: qwerty
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_USER: soc_user
+      MYSQL_USER: slave_user
       MYSQL_DATABASE: soc_db
     command: --default-authentication-plugin=mysql_native_password
     networks:
@@ -32,25 +31,36 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./mysql.conf/slave/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-      - ./mysql.conf/slave/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./mysql-conf/slave/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/slave/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    depends_on:
+      - master
 
-  rest.ru:
+  web.ru:
     image: social:1.1
     container_name: web
     environment:
-      GRPC_PORT: 50051
-      GRPC_HOST: grpc.ru
+
       HTTP_PORT: 8080
       HTTP_HOST: 0.0.0.0
-      APP_BUILD: dev
-      MYSQL_PASSWORD: qwerty
-      MYSQL_USER: soc_user
-      MYSQL_DATABASE: soc_db
-      MYSQL_PORT: 3306
-      MYSQL_HOST: db
+
       SESSION_KEY: Auth
       SESSION_TIME: 24
+
+      APP_BUILD: dev
+
+      MASTER_PASSWORD: qwerty
+      MASTER_USER: soc_user
+      MASTER_DATABASE: soc_db
+      MASTER_PORT: 3306
+      MASTER_HOST: master
+
+      SLAVE_PASSWORD: qwerty
+      SLAVE_USER: soc_user
+      SLAVE_DATABASE: soc_db
+      SLAVE_PORT: 3306
+      SLAVE_HOST: slave
+
     command:  go run main.go -s web
     restart: on-failure
     volumes:
@@ -58,9 +68,35 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - master
+      - slave
     networks:
       - net
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - net
+    volumes:
+      - ./prometheus.yml/:/etc/prometheus/prometheus.yml
+
+  cadvisor:
+    container_name: cadvisor
+    image: google/cadvisor:latest
+    networks:
+      - net
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
+
 volumes:
   tmp:
 networks:

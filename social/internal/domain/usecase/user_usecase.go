@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"social/internal/domain/entities"
 	"social/internal/domain/exceptions"
 	"sort"
@@ -88,7 +89,7 @@ func (s *Service) GetUserByLoginUseCase(ctx context.Context, login string) (*ent
 func (s *Service) SetPasswordUseCase(ctx context.Context, password string, ID int64) error {
 	hash, err := HashPassword(password)
 	if err != nil {
-		return err
+		return fmt.Errorf("hash: %w", err)
 	}
 	modify := time.Now().UTC()
 	return s.userRepository.SetPassword(ctx, hash, ID, modify)

@@ -126,6 +126,7 @@ func (s *HttpServer) registrationHandler(w http.ResponseWriter, r *http.Request)
 	}
 	err = s.SessionProvider.SetSession(w, userSession)
 	if err != nil {
+		s.Logger.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

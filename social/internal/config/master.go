@@ -10,11 +10,12 @@ import (
 
 // DateBaseConf config
 type DateBaseConf struct {
-	BdPassword string `env:"MYSQL_PASSWORD" envDefault:"qwerty"`
-	BdUser     string `env:"MYSQL_USER" envDefault:"soc_user"`
-	BdHost     string `env:"MYSQL_HOST" envDefault:"0.0.0.0"`
-	BdPort     string `env:"MYSQL_PORT" envDefault:"3306"`
-	BdName     string `env:"MYSQL_DATABASE" envDefault:"soc_db"`
+
+	MasterPassword string `env:"MASTER_PASSWORD" envDefault:"qwerty"`
+	MasterUser     string `env:"MASTER_USER" envDefault:"soc_user"`
+	MasterHost     string `env:"MASTER_HOST" envDefault:"master"`
+	MasterPort     string `env:"MASTER_PORT" envDefault:"3306"`
+	MasterName     string `env:"MASTER_DATABASE" envDefault:"soc_db"`
 }
 
 func NewDateBaseConf() *DateBaseConf {
@@ -25,12 +26,14 @@ func NewDateBaseConf() *DateBaseConf {
 	return c
 }
 
-// DBConnection - connection for BD
+// DBConnection - connection for BD master
 func DBConnection(c *DateBaseConf) (*sqlx.DB, error) {
 	// "user:password@tcp(127.0.0.1:3306)/hello"
 	//  user:password@tcp(localhost:5555)/dbname?tls=skip-verify&autocommit=true
-	var dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", c.BdUser, c.BdPassword, c.BdHost, c.BdPort, c.BdName)
-	fmt.Println(dsn)
+	var dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", c.MasterUser, c.MasterPassword, c.MasterHost, c.MasterPort, c.MasterName)
+	fmt.Println("master=",dsn)
 	db, err := sqlx.Connect("mysql", dsn)
 	return db, err
 }
+
+

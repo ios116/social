@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `users`
     KEY `l` (`last_name`)
 );
 
-CREATE USER 'slave_user'@'%' IDENTIFIED BY 'slavepass';
-GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'password';
-FLUSH PRIVILEGES;
 COMMIT;
+
+GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
+FLUSH PRIVILEGES;
