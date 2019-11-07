@@ -2,18 +2,58 @@
 
 ### TASK3
 
+#### Добавить m/s репликацию. Сделать балансирование запросов на чтение. Провести нагрузочное тестирование
+
+- конфиг мастера
+```
+# master
+server-id = 1 # идентификатор мастер сервера
+binlog_do_db = soc_db # база для репликации
+gtid_mode=ON # включает GTID
+binlog_format = ROW # формат ведения журнала row base
+log_bin=mysql-bin # Ведение бинарного лога для мастера (с него читает слейв).
+enforce-gtid-consistency=ON
+```
+- конфиг слейва
+```
+#salve
+binlog_do_db = soc_db # база для репликации
+server_id = 2  # идентификатор slave сервера
+binlog_format = ROW # формат ведения журнала row base
+gtid_mode = on # GTID mod
+enforce_gtid_consistency
+read-only=on # только в режиме чтения
+```
+
+На мастере создан пользователь для реплики
+```mysql
 GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
 FLUSH PRIVILEGES;
-SHOW MASTER STATUS;
+```
+На слейве указан мастер
+```mysql
+CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
+START SLAVE;
+```
 
+**В коде**
 
- CHANGE MASTER TO MASTER_HOST = 'master', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
- START SLAVE;
-show slave status \G 
+Создано два подключения к [master и slave](https://github.com/ios116/social/tree/master/social/internal/config)
+Запрос на чтение берет конфиг именно [слейва](https://github.com/ios116/social/blob/master/social/internal/storage/users/user.go#L164) 
 
-INSERT INTO users (login,password,email,age,city,gender, first_name,last_name)  VALUE('admin5','fddf','site116@gmail.com',0,'ddd','male','dd','ddd');
+Нагрузка на чтение
+```wrk -c 200 -t 16 -d 30s "http://212.109.223.229/search?query=Tomas"```
+
+1) В случае где запросы на чтение идут на master:
+
+![master](social/assets/img/rep_master.png)
+
+2) В случае где запросы на чтение идут на slave
+
+![slave](social/assets/img/rep_slave.png) 
 
 ### Task2
+#### Сгенерировать случайные страницы для проекта социальной сети
 
 **Без индекса**
 ```mysql
@@ -138,6 +178,7 @@ explain SELECT id, first_name, last_name, city FROM users WHERE id>22481 AND (fi
 - При 1000 одновременных соединений увеличивается колличество долгих запросов без индекса 17% от 8624, c индексом 20% от 32735. 
 
 ### Task1
+
 Tech stack:
 - golang
 - mysql 5.7
