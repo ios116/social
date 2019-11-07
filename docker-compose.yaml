@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_USER: soc_user
       MYSQL_DATABASE: soc_db
-    command: --default-authentication-plugin=mysql_native_password
+   # command: --default-authentication-plugin=mysql_native_password
     networks:
       - net
     ports:
@@ -71,30 +71,30 @@ services:
     networks:
       - net
 
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    command:
-#      - --config.file=/etc/prometheus/prometheus.yml
-#    ports:
-#      - "9090:9090"
-#    networks:
-#      - net
-#    volumes:
-#      - ./prometheus.yml/:/etc/prometheus/prometheus.yml
-#
-#  cadvisor:
-#    container_name: cadvisor
-#    image: google/cadvisor:latest
-#    networks:
-#      - net
-#    volumes:
-#      - /:/rootfs:ro
-#      - /var/run:/var/run:ro
-#      - /sys:/sys:ro
-#      - /var/lib/docker/:/var/lib/docker:ro
-#    ports:
-#      - "8081:8080"
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - net
+    volumes:
+      - ./prometheus.yml/:/etc/prometheus/prometheus.yml
+
+  cadvisor:
+    container_name: cadvisor
+    image: google/cadvisor:latest
+    networks:
+      - net
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
 
 volumes:
   tmp:

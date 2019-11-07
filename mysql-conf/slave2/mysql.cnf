@@ -6,7 +6,7 @@ bind-address           = 0.0.0.0
 
 #salve
 binlog_do_db = soc_db
-server_id = 2
+server_id = 3
 binlog_format = ROW
 gtid_mode = on
 enforce_gtid_consistency
@@ -17,5 +17,5 @@ read-only=on
 #log_slave_updates
 # для слейва необязательно
 log_bin = mysql-bin
-plugin-dir=/usr/lib64/mysql/plugin
-rpl_semi_sync_slave_enabled=1
+#lugin-dir=/usr/lib64/mysql/plugin
+#rpl_semi_sync_slave_enabled = 1
