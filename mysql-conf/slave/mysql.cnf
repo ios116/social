@@ -17,5 +17,5 @@ read-only=on
 #log_slave_updates
 # для слейва необязательно
 log_bin = mysql-bin
-plugin-dir=/usr/lib64/mysql/plugin
-rpl_semi_sync_slave_enabled=1
+#plugin-dir=/usr/lib64/mysql/plugin
+#rpl_semi_sync_slave_enabled=1
