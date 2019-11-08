@@ -11,3 +11,6 @@ gtid_mode=ON # включает GTID
 binlog_format = ROW #  формат ведения журнала row base
 log_bin=mysql-bin # Ведение бинарного лога для мастера (с него читает слейв).
 enforce-gtid-consistency=ON # обязательный параметр для GTID, который не даёт всё поломать
+#plugin-dir=/usr/lib64/mysql/plugin
+#rpl_semi_sync_master_enabled=1
+#rpl_semi_sync_master_timeout=1000 # 1 second

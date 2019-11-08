@@ -36,3 +36,6 @@ master:
 
 slave:
 	docker exec -it slave mysql -p -u root soc_db
+
+slave2:
+	docker exec -it slave2 mysql -p -u root soc_db
