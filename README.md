@@ -4,7 +4,7 @@
 
 ### TASK4
 Обеспечить возможность переключения master на другую машину без потери транзакций
-#### master
+#### master semi_sync 
 - Заблокировал запись
 - Установил plugin semisync_master.so 
 - Включил semi_sync репликацию AFTER_SYNC(default) 
@@ -74,7 +74,7 @@ mysql> SHOW PROCESSLIST;
 
 ```
 
-#### slave
+#### slave semi_sync
 
 - Установил plugin на slave, slave2
 - Включил semi_sync репликацию 
