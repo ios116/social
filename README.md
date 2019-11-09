@@ -14,7 +14,6 @@
 INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';
 SET GLOBAL rpl_semi_sync_master_enabled = 1;
 SET GLOBAL rpl_semi_sync_master_timeout = 1000;
-SET @@GLOBAL.read_only = OFF;
 ```
 
 ```shell script
@@ -148,7 +147,7 @@ RESET MASTER;
 STOP SLAVE;
 CHANGE MASTER TO MASTER_HOST = 'slave', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
 START SLAVE;
- SET GLOBAL read_only = OFF;
+SET GLOBAL read_only = OFF;
 ```
 ```shell script
 mysql> show slave status \G
@@ -193,7 +192,7 @@ mysql> SHOW STATUS LIKE 'Rpl_semi_sync%';
 15 rows in set (0.05 sec)
 ```
 
-Восстанавливаем старый мастер
+Поднимаем убитый мастер и смотрим состояние на момент смерти
 
 ```shell script
 mysql> select count(*) from users;
@@ -213,9 +212,9 @@ mysql> show master status;
 1 row in set (0.00 sec)
 
 ````
-
+**Выводы:**
 1) Количестов записей мастера совпадает с количестовм записей слейвов
-2) Executed_Gtid мастера в момент подения совпадает с Executed_Gtid слейвов
+2) Executed_Gtid мастера в момент падения совпадает с Executed_Gtid слейвов
 
 Вывод транзакции не потерялись
 
