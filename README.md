@@ -4,7 +4,7 @@
 
 ### TASK4
 Обеспечить возможность переключения master на другую машину без потери транзакций
-#### master semi_sync 
+#### Master semi_sync 
 
 - Установил plugin semisync_master.so 
 - Включил semi_sync репликацию AFTER_SYNC(default) 
@@ -71,7 +71,7 @@ mysql> SHOW PROCESSLIST;
 
 ```
 
-#### slave semi_sync
+#### Slave semi_sync
 
 - Установил plugin на slave, slave2
 - Включил semi_sync репликацию 
@@ -111,7 +111,7 @@ Retrieved_Gtid_Set: cc6a271c-fda5-11e9-bc17-0242ac1c0002:1-4068
 Executed_Gtid_Set: cc6a271c-fda5-11e9-bc17-0242ac1c0002:1-4068
 ```
 
-### Убиваю мастер
+#### Убиваю мастер
 - Запускаем запись данных в 2 потока
 - docker kill --signal=SIGKILL master
 
@@ -212,7 +212,7 @@ mysql> show master status;
 1 row in set (0.00 sec)
 
 ````
-**Выводы:**
+#### Выводы:
 1) Количестов записей мастера совпадает с количестовм записей слейвов
 2) Executed_Gtid мастера в момент падения совпадает с Executed_Gtid слейвов
 
