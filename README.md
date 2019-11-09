@@ -5,14 +5,12 @@
 ### TASK4
 Обеспечить возможность переключения master на другую машину без потери транзакций
 #### master semi_sync 
-- Заблокировал запись
+
 - Установил plugin semisync_master.so 
 - Включил semi_sync репликацию AFTER_SYNC(default) 
 - Установил timeout ожидания записи на слейв 1s 
 - Проверил статус
-- Разблокировал запись
 ```mysql
-SET @@GLOBAL.read_only = ON;
 INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';
 SET GLOBAL rpl_semi_sync_master_enabled = 1;
 SET GLOBAL rpl_semi_sync_master_timeout = 1000;
@@ -87,7 +85,6 @@ INSTALL PLUGIN rpl_semi_sync_slave SONAME 'semisync_slave.so';
 SET GLOBAL rpl_semi_sync_slave_enabled = 1;
 STOP SLAVE IO_THREAD;
 START SLAVE IO_THREAD;
-SET @@GLOBAL.read_only = OFF;
 ```
 
 ```shell script
@@ -151,6 +148,7 @@ RESET MASTER;
 STOP SLAVE;
 CHANGE MASTER TO MASTER_HOST = 'slave', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
 START SLAVE;
+ SET GLOBAL read_only = OFF;
 ```
 ```shell script
 mysql> show slave status \G
