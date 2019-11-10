@@ -1,9 +1,10 @@
 ## Social network 
-количество записей 
-1018545
 
 ### TASK4
 Обеспечить возможность переключения master на другую машину без потери транзакций
+
+Используется master и два слейва. Для сохрание записей настраиваю. Semisynchronous Replication
+
 #### Master semi_sync 
 
 - Установил plugin semisync_master.so 
@@ -73,7 +74,7 @@ mysql> SHOW PROCESSLIST;
 
 #### Slave semi_sync
 
-- Установил plugin на slave, slave2
+- Установил plugin на slave1, slave2
 - Включил semi_sync репликацию 
 - Перегрузил io thread 
 - Проверил статус
@@ -115,7 +116,7 @@ Executed_Gtid_Set: cc6a271c-fda5-11e9-bc17-0242ac1c0002:1-4068
 - Запускаем запись данных в 2 потока
 - docker kill --signal=SIGKILL master
 
-##### Состояние обоих slave по после смерти master одинаковое любой может стать мастером
+##### Состояние обоих slave по после смерти master одинаковое и любой может стать мастером
 ```shell script
 show slave status \G
 Retrieved_Gtid_Set: cc6a271c-fda5-11e9-bc17-0242ac1c0002:1-5346
@@ -142,10 +143,10 @@ FLUSH PRIVILEGES;
 RESET MASTER;
 ```
 
-переключаем slave2 на slave
+переключаем slave2 на slave1
 ```mysql
 STOP SLAVE;
-CHANGE MASTER TO MASTER_HOST = 'slave', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
+CHANGE MASTER TO MASTER_HOST = 'slave1', MASTER_PORT = 3306,  MASTER_USER = 'slave_user', MASTER_PASSWORD = 'qwerty', MASTER_AUTO_POSITION = 1;
 START SLAVE;
 SET GLOBAL read_only = OFF;
 ```
