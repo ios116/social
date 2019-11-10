@@ -3,7 +3,7 @@
 ### TASK4
 Обеспечить возможность переключения master на другую машину без потери транзакций
 
-Используется master и два слейва. Для сохрание записей настраиваю. Semisynchronous Replication
+Используется master и два слейва. Для сохрание записей после сбоя настраиваю Semisynchronous Replication
 
 #### Master semi_sync 
 
