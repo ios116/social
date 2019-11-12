@@ -130,7 +130,7 @@ mysql> select count(*) from users;
 1 row in set (0.11 sec)
 ```
 
-### Slave Promotion
+#### Slave Promotion
 ```mysql
 STOP SLAVE;
 CHANGE MASTER TO MASTER_HOST = ' ';
