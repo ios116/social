@@ -9,26 +9,7 @@ import (
 	"time"
 )
 
-type UserDB struct {
-	ID          int64
-	Login       string
-	Password    string
-	Email       string
-	FirstName   sql.NullString `db:"first_name"`
-	LastName    sql.NullString `db:"last_name"`
-	City        sql.NullString
-	Gender      sql.NullString
-	Interests   sql.NullString
-	DateCreated time.Time `db:"date_created"`
-	DateModify  time.Time `db:"date_modify"`
-	Age         int32
-}
 
-type UserRole struct {
-	ID     int64
-	UserID int64 `Db:"user_id"`
-	RoleID int64 `Db:"role_id"`
-}
 
 func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
 	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name, age) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?,?);"
@@ -37,11 +18,11 @@ func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, 
 	case nil:
 		id, err := result.LastInsertId()
 		if err != nil {
-			return 0, fmt.Errorf("sql: last insert id: %s", err)
+			return 0, fmt.Errorf("sql: last insert id: %w", err)
 		}
 		return id, nil
 	default:
-		return 0, fmt.Errorf("sql: %s", err)
+		return 0, fmt.Errorf("sql: %w", err)
 	}
 }
 

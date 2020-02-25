@@ -20,17 +20,18 @@ CREATE TABLE IF NOT EXISTS users
     KEY f (first_name),
     KEY l (last_name)
 );
-CREATE TABLE IF NOT EXISTS `subscriber`
-(
-    id           bigint PRIMARY KEY AUTO_INCREMENT,
-    user_id      bigint(20) unsigned NOT NULL,
-    subscribe_id bigint(20) unsigned NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ,
-    FOREIGN KEY (subscribe_id) REFERENCES users (id) ON DELETE CASCADE
-);
-CREATE INDEX subscriber_user_id on subscriber (user_id);
-CREATE INDEX subscriber_subscriber_id on subscriber (subscribe_id);
 
+CREATE TABLE IF NOT EXISTS subscribers
+(
+    id            bigint PRIMARY KEY AUTO_INCREMENT,
+    user_id       bigint(20) unsigned NOT NULL,
+    subscriber_id bigint(20) unsigned NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (subscriber_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE INDEX subscriber_user_id on subscribers (user_id);
+CREATE INDEX subscriber_subscriber_id on subscribers (subscriber_id);
 COMMIT;
 
 GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';

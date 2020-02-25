@@ -42,3 +42,8 @@ type UserRepository interface {
 	GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*User, error)
 	FindByName(ctx context.Context, q string, id int64,limit int64, direction string) ([]*User, error)
 }
+
+type Subscriber interface {
+	Subscribe(ctx context.Context, userId int64, subscribeId int64) error
+	UnSubscribe(ctx context.Context, userId int64, subscribeId int64) error
+}
