@@ -26,7 +26,7 @@ image:
 	docker build -f ./social/Dockerfile.full -t social:1.1 ./social
 
 dump:
-	docker exec master mysqldump -u root --password='123456' soc_db > dump_users.sql
+	docker exec master mysqldump -u root --password='123456' --single-transaction --set-gtid-purged=OFF soc_db > dump_users.sql
 
 restore:
 	docker-compose run --rm master mysql -u root -h master --password=123456 soc_db < dump_users.sql
