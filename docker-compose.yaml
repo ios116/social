@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_USER: soc_user
       MYSQL_DATABASE: soc_db
-   # command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password
     networks:
       - net
     ports:
@@ -17,7 +17,7 @@ services:
     volumes:
       - ./mysql-conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql-conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./mysql-datadir/master:/var/lib/mysql
+
   slave:
     image: mysql:5.7.27
     container_name: slave
@@ -34,19 +34,39 @@ services:
     volumes:
       - ./mysql-conf/slave/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql-conf/slave/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./mysql-datadir/slave:/var/lib/mysql
+    depends_on:
+      - master
+  slave2:
+    image: mysql:5.7.27
+    container_name: slave2
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: slave_user
+      MYSQL_DATABASE: soc_db
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./mysql-conf/slave2/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/slave2/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    depends_on:
+      - master
 
   web.ru:
-    build: ./social
+    image: social:1.1
     container_name: web
     environment:
 
-      HTTP_PORT: 80
+      HTTP_PORT: 8080
       HTTP_HOST: 0.0.0.0
 
       SESSION_KEY: Auth
       SESSION_TIME: 24
-      APP_BUILD: prod
+
+      APP_BUILD: dev
 
       MASTER_PASSWORD: qwerty
       MASTER_USER: soc_user
@@ -60,17 +80,18 @@ services:
       SLAVE_PORT: 3306
       SLAVE_HOST: slave
 
-    command:  sh -c './wait-for.sh master:3306 -- ./main -s web'
+    command:  go run main.go -s web
     restart: on-failure
+    volumes:
+      - ./social/:/code
     ports:
-      - "80:80"
+      - "8080:8080"
     depends_on:
       - master
       - slave
     networks:
       - net
-
-  prometheus:
+  prometheus.com:
     image: prom/prometheus
     container_name: prometheus
     command:
@@ -94,10 +115,20 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     ports:
       - "8081:8080"
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 123456
+    networks:
+      - net
 
 volumes:
   tmp:
-
 networks:
   net:
     driver: bridge
+
+

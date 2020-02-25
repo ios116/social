@@ -1,10 +1,10 @@
-up:
-	docker-compose up -d --build
+up-p:
+	docker-compose -f docker-compose.prod.yaml up -d --build
 
-stop:
-	docker-compose stop
+stop-p:
+	docker-compose -f docker-compose.prod.yaml stop
 
-down:
+down-p:
 	docker-compose down
 
 restart: down up
@@ -15,15 +15,14 @@ unit_test:
 	docker-compose -f docker-compose.unit.yaml run unit_tests go test -v -count=1 ./... || test_status=$$?;\
 	docker-compose -f docker-compose.unit.yaml down; echo "status="$$test_status;exit $$test_status;
 
-dev:
-	docker-compose -f docker-compose.dev.yaml up -d
+up:
+	docker-compose up -d
 
-dev_stop:
-	docker-compose -f docker-compose.dev.yaml stop
+stop:
+	docker-compose stop
 
-
-image:
-	docker build -f ./social/Dockerfile.full -t social:1.1 ./social
+image_multistage:
+	docker build -f ./social/Dockerfile.multistage -t social:1.1 ./social
 
 dump:
 	docker exec master mysqldump -u root --password='123456' --single-transaction --set-gtid-purged=OFF soc_db > dump_users.sql

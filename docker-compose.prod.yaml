@@ -1,0 +1,103 @@
+version: '3'
+services:
+
+  master:
+    image: mysql:5.7.27
+    container_name: master
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+   # command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./mysql-datadir/master:/var/lib/mysql
+  slave:
+    image: mysql:5.7.27
+    container_name: slave
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: slave_user
+      MYSQL_DATABASE: soc_db
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql-conf/slave/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql-conf/slave/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./mysql-datadir/slave:/var/lib/mysql
+
+  web.ru:
+    build: ./social
+    container_name: web
+    environment:
+
+      HTTP_PORT: 80
+      HTTP_HOST: 0.0.0.0
+
+      SESSION_KEY: Auth
+      SESSION_TIME: 24
+      APP_BUILD: prod
+
+      MASTER_PASSWORD: qwerty
+      MASTER_USER: soc_user
+      MASTER_DATABASE: soc_db
+      MASTER_PORT: 3306
+      MASTER_HOST: master
+
+      SLAVE_PASSWORD: qwerty
+      SLAVE_USER: soc_user
+      SLAVE_DATABASE: soc_db
+      SLAVE_PORT: 3306
+      SLAVE_HOST: slave
+
+    command:  sh -c './wait-for.sh master:3306 -- ./main -s web'
+    restart: on-failure
+    ports:
+      - "80:80"
+    depends_on:
+      - master
+      - slave
+    networks:
+      - net
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - net
+    volumes:
+      - ./prometheus.yml/:/etc/prometheus/prometheus.yml
+
+  cadvisor:
+    container_name: cadvisor
+    image: google/cadvisor:latest
+    networks:
+      - net
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
+
+volumes:
+  tmp:
+
+networks:
+  net:
+    driver: bridge
