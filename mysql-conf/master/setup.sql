@@ -4,7 +4,7 @@ BEGIN;
 --
 CREATE TABLE IF NOT EXISTS users
 (
-    id           bigint PRIMARY KEY AUTO_INCREMENT,
+    id           serial PRIMARY KEY,
     login        varchar(255) NOT NULL UNIQUE check ( login <> '' ),
     password     varchar(255) NOT NULL CHECK (password <> ''),
     email        varchar(255) NOT NULL CHECK (email <> ''),
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS `subscriber`
 (
     id           bigint PRIMARY KEY AUTO_INCREMENT,
-    user_id      bigint  NOT NULL,
-    subscribe_id bigint  NOT NULL,
+    user_id      bigint(20) unsigned NOT NULL,
+    subscribe_id bigint(20) unsigned NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ,
     FOREIGN KEY (subscribe_id) REFERENCES users (id) ON DELETE CASCADE
 );
