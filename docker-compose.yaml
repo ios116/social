@@ -61,9 +61,10 @@ services:
     networks:
       - net
     volumes:
-      - ./lua:/opt/tarantool
+      - ./lua/:/opt/tarantool/
     ports:
       - "3301:3301"
+    command: tarantool /opt/tarantool/app.lua
 
   web.ru:
     image: social:1.1
