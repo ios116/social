@@ -3,7 +3,7 @@ character-set-server = utf8
 collation-server = utf8_unicode_ci
 skip-character-set-client-handshake
 bind-address           = 0.0.0.0
-
+explicit_defaults_for_timestamp = 1
 # master
 server-id = 1 # идентификатор мастер сервера
 binlog_do_db = soc_db # база для репликации
