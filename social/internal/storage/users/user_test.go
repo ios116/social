@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/dig"
 	"social/internal/config"
 	"social/internal/domain/entities"
@@ -95,7 +96,7 @@ func TestUserStore(t *testing.T) {
 	})
 
 	t.Run("Get by name", func(t *testing.T) {
-		users, err := pg.FindByName(ctx,"Tom",0,2,"")
+		users, err := pg.FindByName(ctx, "Tom", 0, 2, "")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -110,4 +111,30 @@ func TestUserStore(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
+
+	user2 := &entities.User{
+		Login:       "Gaga",
+		Password:    "13456",
+		Email:       "site@mail.ru",
+		FirstName:   "Lady",
+		LastName:    "GaGa",
+		City:        "NewYork",
+		Gender:      "female",
+		Interests:   "Some interest",
+		DateCreated: time.Now().UTC(),
+		DateModify:  time.Now().UTC(),
+	}
+
+	t.Run("Subscribe to user", func(t *testing.T) {
+		user2.ID, err = pg.AddUser(ctx, user2)
+		assert.Equal(t, nil, err)
+		_, err = pg.Subscribe(ctx, user.ID, user2.ID)
+		assert.Equal(t, nil, err)
+	})
+
+	t.Run("Delete subscribe", func(t *testing.T) {
+		err = pg.UnSubscribe(ctx, user.ID, user2.ID)
+		assert.Equal(t, nil, err)
+	})
+
 }
