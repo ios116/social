@@ -58,6 +58,11 @@ services:
   tarantool:
     image: tarantool/tarantool:latest
     container_name: inmem
+    environment:
+      TARANTOOL_PORT: 3031
+      TARANTOOL_HOST: 0.0.0.0
+      TARANTOOL_USER_NAME: admin
+      TARANTOOL_USER_PASSWORD: 123456
     networks:
       - net
     volumes:
@@ -78,6 +83,11 @@ services:
       SESSION_TIME: 24
 
       APP_BUILD: dev
+
+      TARANTOOL_PORT: 3031
+      TARANTOOL_HOST: 0.0.0.0
+      TARANTOOL_USER_NAME: admin
+      TARANTOOL_USER_PASSWORD: 123456
 
       MASTER_PASSWORD: qwerty
       MASTER_USER: soc_user
