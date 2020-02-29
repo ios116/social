@@ -35,6 +35,8 @@ func BuildContainer() *dig.Container {
 	container := dig.New()
 	// app config
 	container.Provide(config.NewAppConf)
+	// tarantool config
+	container.Provide(config.NewTarantoolConf)
 	// app logger
 	container.Provide(config.CreateLogger)
 	// DB config
@@ -43,6 +45,8 @@ func BuildContainer() *dig.Container {
 	container.Provide(config.NewSlaveConf)
 	// connection to date base
 	container.Provide(Connection)
+	// connection to tarantool
+	container.Provide(config.TarantoolConnection)
 	// cast db to interface
 	container.Provide(CastToUserRepository)
 	// HTTP config

@@ -31,7 +31,6 @@ func SlaveConnection(c *SlaveConf) (*sqlx.DB, error) {
 	// "user:password@tcp(127.0.0.1:3306)/hello"
 	//  user:password@tcp(localhost:5555)/dbname?tls=skip-verify&autocommit=true
 	var dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", c.SlaveUser, c.SlavePassword, c.SlaveHost, c.SlavePort, c.SlaveName)
-	fmt.Println("SlaveConnection ===>",dsn)
 	db, err := sqlx.Connect("mysql", dsn)
 	return db, err
 }

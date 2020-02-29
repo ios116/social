@@ -1,8 +1,11 @@
 package config
 
 import (
+	"fmt"
 	"github.com/caarlos0/env/v6"
+	"github.com/tarantool/go-tarantool"
 	"log"
+	"time"
 )
 
 // TarantoolConf env for tarantool
@@ -13,10 +16,36 @@ type TarantoolConf struct {
 	Password string `env:"TARANTOOL_USER_PASSWORD" envDefault:"123456"`
 }
 
-func NewTarantoolConf () *TarantoolConf {
-	c := &TarantoolConf {}
+func NewTarantoolConf() *TarantoolConf {
+	c := &TarantoolConf{}
 	if err := env.Parse(c); err != nil {
 		log.Fatalf("%+v\n", err)
 	}
 	return c
+}
+
+func TarantoolConnection(conf *TarantoolConf) {
+	opts := tarantool.Opts{
+		User:          conf.UserName,
+		Pass:          conf.Password,
+		Reconnect:     2 * time.Second,
+		MaxReconnects: 3,
+	}
+	dsn := fmt.Sprintf("%s:%d", conf.Host, conf.Port)
+	fmt.Println("tartantoo =", dsn)
+	conn, err := tarantool.Connect(dsn, opts)
+	if err != nil {
+		log.Println("Tarantool connection refused:", err)
+	}
+	resp, err := conn.Ping()
+	if err !=nil {
+		log.Fatal(err)
+	}
+	log.Println("====>",resp.Code, resp.Data)
+	//resp, err := conn.Insert(999, []interface{}{99999, "BB"})
+	//if err != nil {
+	//	fmt.Println("Error", err)
+	//	fmt.Println("Code", resp.Code)
+	//}
+
 }

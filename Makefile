@@ -9,14 +9,30 @@ down-p:
 
 restart: down up
 
-unit_test:
+unit:
 	test_status=0;\
-	docker-compose -f docker-compose.unit.yaml up --build -d;\
-	docker-compose -f docker-compose.unit.yaml run unit_tests go test -v -count=1 ./... || test_status=$$?;\
-	docker-compose -f docker-compose.unit.yaml down; echo "status="$$test_status;exit $$test_status;
+	docker-compose -f deployments/docker-compose.unit.yaml up -d ;\
+	docker-compose -f deployments/docker-compose.unit.yaml run unit_tests go test -v -count=1 ./... || test_status=$$?;\
+	docker-compose -f deployments/docker-compose.unit.yaml down; echo "status="$$test_status;exit $$test_status;
 
 up:
 	docker-compose up -d
+
+rt: 
+	docker-compose restart tarantool
+
+r: 
+	docker-compose restart 
+
+rw: 
+	docker-compose restart web.ru
+
+lw:
+	docker-compose logs -f --tail=10 web.ru
+
+lt:
+	docker-compose logs -f --tail=10 tarantool
+
 
 stop:
 	docker-compose stop

@@ -2,21 +2,16 @@ package usecase
 
 import (
 	"context"
-	"github.com/golang/mock/gomock"
 	"social/internal/domain/entities"
 	"testing"
 	"time"
 )
 
 func TestUseCase(t *testing.T) {
-	ctrl := gomock.NewController(t)
 	// Assert that Bar() is invoked.
-	defer ctrl.Finish()
-	repoUser := NewMockUserRepository(ctrl)
-
+	repoUser := new(MockedUseCaseUser)
 	service := NewService(repoUser)
 	ctx := context.Background()
-
 	user := &entities.User{
 		ID:          1,
 		Login:       "Login",
@@ -28,22 +23,19 @@ func TestUseCase(t *testing.T) {
 	}
 
 	t.Run("AddUser", func(t *testing.T) {
-		repoUser.EXPECT().AddUser(ctx, user).Return(int64(24), nil).AnyTimes()
+         repoUser.On("AddUser",ctx,user).Return(int64(24),nil)
 		_, err := service.AddUserUseCase(ctx, user)
 		if err != nil {
 			t.Fatal(err)
 		}
 	})
-
 	t.Run("CheckAuthUseCase", func(t *testing.T) {
 		user.Password, _ = HashPassword("123456")
-		repoUser.EXPECT().GetUserByLogin(ctx, "Admin").Return(user, nil).AnyTimes()
+		repoUser.On("GetUserByLogin",ctx,"Admin").Return(user,nil)
 		user, err := service.CheckAuthUseCase(ctx, "Admin", "123456")
 		if err != nil {
 			t.Fatal(err)
 		}
 		t.Log(user)
-
 	})
-
 }

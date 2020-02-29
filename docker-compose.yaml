@@ -55,6 +55,17 @@ services:
     depends_on:
       - master
 
+  queue:
+    image: rabbitmq:3.7.17
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: 123456
+    ports:
+      - "5672:5672"
+    networks:
+      - net
+    restart: on-failure
+
   tarantool:
     image: tarantool/tarantool:latest
     container_name: inmem
@@ -101,6 +112,9 @@ services:
       SLAVE_PORT: 3306
       SLAVE_HOST: slave
 
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: 123456
+
     command:  go run main.go -s web
     restart: on-failure
     volumes:
@@ -110,6 +124,7 @@ services:
     depends_on:
       - master
       - slave
+      - tarantool
     networks:
       - net
 
@@ -118,5 +133,3 @@ volumes:
 networks:
   net:
     driver: bridge
-
-

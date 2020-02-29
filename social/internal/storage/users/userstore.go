@@ -14,6 +14,3 @@ type UserStorage struct {
 func NewUserStorage(db *sqlx.DB, dbSlave *sqlx.DB) *UserStorage {
 	return &UserStorage{Db: db, DbSlave: dbSlave}
 }
-
-
-

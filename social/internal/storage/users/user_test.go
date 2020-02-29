@@ -95,7 +95,7 @@ func TestUserStore(t *testing.T) {
 	})
 
 	t.Run("Get by name", func(t *testing.T) {
-		users, err := pg.FindByName(ctx, "Tom")
+		users, err := pg.FindByName(ctx,"Tom",0,2,"")
 		if err != nil {
 			t.Fatal(err)
 		}
