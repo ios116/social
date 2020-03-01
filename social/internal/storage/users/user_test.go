@@ -126,6 +126,8 @@ func TestUserStore(t *testing.T) {
 	}
 
 	t.Run("Subscribe to user", func(t *testing.T) {
+		user.ID, err = pg.AddUser(ctx, user)
+		assert.Equal(t, nil, err)
 		user2.ID, err = pg.AddUser(ctx, user2)
 		assert.Equal(t, nil, err)
 		_, err = pg.Subscribe(ctx, user.ID, user2.ID)

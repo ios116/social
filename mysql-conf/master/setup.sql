@@ -29,9 +29,7 @@ CREATE TABLE IF NOT EXISTS subscribers
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (subscriber_id) REFERENCES users (id) ON DELETE CASCADE
 );
-
-CREATE INDEX subscriber_user_id on subscribers (user_id);
-CREATE INDEX subscriber_subscriber_id on subscribers (subscriber_id);
+-- CREATE INDEX subscriber_user_subscriber on subscribers (user_id, subscriber_id);
 COMMIT;
 
 GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'qwerty';
