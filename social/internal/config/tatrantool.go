@@ -32,16 +32,14 @@ func TarantoolConnection(conf *TarantoolConf) (*tarantool.Connection, error) {
 		MaxReconnects: 3,
 	}
 	dsn := fmt.Sprintf("%s:%d", conf.Host, conf.Port)
-	fmt.Println("tarantool=> ", dsn)
 	conn, err := tarantool.Connect(dsn, opts)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := conn.Ping()
+	_, err = conn.Ping()
 	if err !=nil {
 		return nil, err
 	}
-	log.Println("====>",resp.Code, resp.Data)
 	return conn, nil
 	//resp, err := conn.Insert(999, []interface{}{99999, "BB"})
 	//if err != nil {

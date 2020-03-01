@@ -56,7 +56,7 @@ services:
       APP_BUILD: dev
 
       TARANTOOL_PORT: 3031
-      TARANTOOL_HOST: 0.0.0.0
+      TARANTOOL_HOST: test_tarantool
       TARANTOOL_USER_NAME: admin
       TARANTOOL_USER_PASSWORD: 123456
 
