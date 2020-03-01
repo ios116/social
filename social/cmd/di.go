@@ -5,30 +5,17 @@ import (
 	"social/internal/config"
 	"social/internal/domain/entities"
 	"social/internal/domain/usecase"
-	"social/internal/storage/users"
-
+	"social/internal/storage"
 	"social/internal/webserver"
 )
 
-func CastToUserRepository(s *users.UserStorage) entities.UserRepository {
+func CastToUserRepository(s *storage.Storage) entities.UserRepository {
 	return entities.UserRepository(s)
 }
 
 func CastToUseService(c *usecase.Service) usecase.UserService {
 	return usecase.UserService(c)
 }
-
-//func Connection(master *config.DateBaseConf, slave *config.SlaveConf, tar *tarantool.Connection) *users.UserStorage {
-//	connMaster, err := config.DBConnection(master)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	connSlave, err := config.SlaveConnection(slave)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	return users.NewUserStorage(connMaster, connSlave)
-//}
 
 func BuildContainer() *dig.Container {
 	container := dig.New()
@@ -50,7 +37,7 @@ func BuildContainer() *dig.Container {
 	container.Provide(config.SlaveConnection)
 
 	// connection to date base
-	container.Provide(users.NewUserStorage)
+	container.Provide(storage.NewStorage)
 
 	// cast db to interface
 	container.Provide(CastToUserRepository)

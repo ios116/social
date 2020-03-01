@@ -1,4 +1,4 @@
-package users
+package storage
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 
 
 
-func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
+func (p *Storage) AddUser(ctx context.Context, user *entities.User) (int64, error) {
 	query := "INSERT INTO users(login, password, email, city, gender, interests ,date_created,date_modify, first_name, last_name, age) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?,?,?);"
 	result, err := p.Db.ExecContext(ctx, query, user.Login, user.Password, user.Email, user.City, user.Gender, user.Interests, user.DateCreated, user.DateModify, user.FirstName, user.LastName, user.Age)
 	switch err {
@@ -26,7 +26,7 @@ func (p *UserStorage) AddUser(ctx context.Context, user *entities.User) (int64, 
 	}
 }
 
-func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error {
+func (p *Storage) UpdateUser(ctx context.Context, user *entities.User) error {
 	query := "UPDATE users SET login = :login, email = :email, city = :city, gender = :gender, interests = :interests, date_created = :date_created, date_modify = :date_modify,first_name = :first_name, last_name = :last_name, age=:age  WHERE id=:id"
 
 	result, err := p.Db.NamedExecContext(ctx, query,
@@ -56,7 +56,7 @@ func (p *UserStorage) UpdateUser(ctx context.Context, user *entities.User) error
 	return nil
 }
 
-func (p *UserStorage) DeleteUser(ctx context.Context, ID int64) error {
+func (p *Storage) DeleteUser(ctx context.Context, ID int64) error {
 	result, err := p.Db.ExecContext(ctx, "DELETE FROM users WHERE id = ?", ID)
 	if err != nil {
 		return err
@@ -71,7 +71,7 @@ func (p *UserStorage) DeleteUser(ctx context.Context, ID int64) error {
 	return nil
 }
 
-func (p *UserStorage) GetUserByLogin(ctx context.Context, login string) (*entities.User, error) {
+func (p *Storage) GetUserByLogin(ctx context.Context, login string) (*entities.User, error) {
 
 	query := "SELECT * FROM users WHERE login=?"
 	dest := &UserDB{}
@@ -82,7 +82,7 @@ func (p *UserStorage) GetUserByLogin(ctx context.Context, login string) (*entiti
 	return toUser(dest), nil
 }
 
-func (p *UserStorage) GetUserById(ctx context.Context, ID int64) (*entities.User, error) {
+func (p *Storage) GetUserById(ctx context.Context, ID int64) (*entities.User, error) {
 	query := "SELECT * FROM users WHERE id=?"
 	dest := &UserDB{}
 	err := p.DbSlave.GetContext(ctx, dest, query, ID)
@@ -96,7 +96,7 @@ func (p *UserStorage) GetUserById(ctx context.Context, ID int64) (*entities.User
 	}
 }
 
-func (p *UserStorage) SetPassword(ctx context.Context, password string, ID int64, modify time.Time) error {
+func (p *Storage) SetPassword(ctx context.Context, password string, ID int64, modify time.Time) error {
 	query := "UPDATE users SET password = ?, date_modify=? WHERE id=?"
 	result, err := p.Db.ExecContext(ctx, query, password, modify, ID)
 	if err != nil {
@@ -113,7 +113,7 @@ func (p *UserStorage) SetPassword(ctx context.Context, password string, ID int64
 }
 
 //
-func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error) {
+func (p *Storage) GetUsersWithLimitAndOffset(ctx context.Context, limit int64, offset int64) ([]*entities.User, error) {
 	query := "SELECT * FROM users ORDER BY id DESC LIMIT ? OFFSET ?"
 	rows, err := p.DbSlave.QueryxContext(ctx, query, limit, offset)
 	if err != nil {
@@ -134,7 +134,7 @@ func (p *UserStorage) GetUsersWithLimitAndOffset(ctx context.Context, limit int6
 // FindByName find users by first_name and last_name
 // for example if prev - select id, first_name from users where id<=800060 order by id DESC limit 11;
 // for example if next - select id, first_name from users where id>=800060 order by id ASC limit 11;
-func (p *UserStorage) FindByName(ctx context.Context, q string, id int64, limit int64, direction string) ([]*entities.User, error) {
+func (p *Storage) FindByName(ctx context.Context, q string, id int64, limit int64, direction string) ([]*entities.User, error) {
 	var query = ""
 	if direction == "prev" {
 		query = "SELECT id, first_name, last_name, city FROM users WHERE id<? AND (first_name LIKE ? or last_name LIKE ?) ORDER BY id DESC LIMIT ?"

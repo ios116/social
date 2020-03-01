@@ -1,4 +1,4 @@
-package users
+package storage
 
 import (
 	"context"
@@ -11,14 +11,14 @@ import (
 )
 
 func TestUserStore(t *testing.T) {
-	var pg *UserStorage
+	var pg *Storage
 	container := dig.New()
 	container.Provide(config.NewDateBaseConf)
 	container.Provide(config.DBConnection)
 	container.Provide(config.NewTarantoolConf)
 	container.Provide(config.TarantoolConnection)
-	container.Provide(NewUserStorage)
-	err := container.Invoke(func(st *UserStorage) {
+	container.Provide(NewStorage)
+	err := container.Invoke(func(st *Storage) {
 		pg = st
 	})
 	if err != nil {
