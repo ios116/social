@@ -24,7 +24,7 @@ func NewTarantoolConf() *TarantoolConf {
 	return c
 }
 
-func TarantoolConnection(conf *TarantoolConf) {
+func TarantoolConnection(conf *TarantoolConf) (*tarantool.Connection, error) {
 	opts := tarantool.Opts{
 		User:          conf.UserName,
 		Pass:          conf.Password,
@@ -32,20 +32,20 @@ func TarantoolConnection(conf *TarantoolConf) {
 		MaxReconnects: 3,
 	}
 	dsn := fmt.Sprintf("%s:%d", conf.Host, conf.Port)
-	fmt.Println("tartantoo =", dsn)
+	fmt.Println("tarantool=> ", dsn)
 	conn, err := tarantool.Connect(dsn, opts)
 	if err != nil {
-		log.Println("Tarantool connection refused:", err)
+		return nil, err
 	}
 	resp, err := conn.Ping()
 	if err !=nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	log.Println("====>",resp.Code, resp.Data)
+	return conn, nil
 	//resp, err := conn.Insert(999, []interface{}{99999, "BB"})
 	//if err != nil {
 	//	fmt.Println("Error", err)
 	//	fmt.Println("Code", resp.Code)
 	//}
-
 }

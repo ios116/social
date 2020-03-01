@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"go.uber.org/dig"
-	"log"
 	"social/internal/config"
 	"social/internal/domain/entities"
 	"social/internal/domain/usecase"
@@ -19,34 +18,40 @@ func CastToUseService(c *usecase.Service) usecase.UserService {
 	return usecase.UserService(c)
 }
 
-func Connection(master *config.DateBaseConf, slave *config.SlaveConf) *users.UserStorage {
-	connMaster, err := config.DBConnection(master)
-	if err != nil {
-		log.Fatal(err)
-	}
-	connSlave, err := config.SlaveConnection(slave)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return users.NewUserStorage(connMaster, connSlave)
-}
+//func Connection(master *config.DateBaseConf, slave *config.SlaveConf, tar *tarantool.Connection) *users.UserStorage {
+//	connMaster, err := config.DBConnection(master)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	connSlave, err := config.SlaveConnection(slave)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	return users.NewUserStorage(connMaster, connSlave)
+//}
 
 func BuildContainer() *dig.Container {
 	container := dig.New()
 	// app config
 	container.Provide(config.NewAppConf)
-	// tarantool config
-	container.Provide(config.NewTarantoolConf)
 	// app logger
 	container.Provide(config.CreateLogger)
+
+	// tarantool config
+	container.Provide(config.NewTarantoolConf)
+	container.Provide(config.TarantoolConnection)
+
 	// DB config
 	container.Provide(config.NewDateBaseConf)
+	container.Provide(config.DBConnection)
+
 	// slave config
 	container.Provide(config.NewSlaveConf)
+	container.Provide(config.SlaveConnection)
+
 	// connection to date base
-	container.Provide(Connection)
-	// connection to tarantool
-	container.Provide(config.TarantoolConnection)
+	container.Provide(users.NewUserStorage)
+
 	// cast db to interface
 	container.Provide(CastToUserRepository)
 	// HTTP config

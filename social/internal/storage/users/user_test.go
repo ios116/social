@@ -15,6 +15,8 @@ func TestUserStore(t *testing.T) {
 	container := dig.New()
 	container.Provide(config.NewDateBaseConf)
 	container.Provide(config.DBConnection)
+	container.Provide(config.NewTarantoolConf)
+	container.Provide(config.TarantoolConnection)
 	container.Provide(NewUserStorage)
 	err := container.Invoke(func(st *UserStorage) {
 		pg = st
