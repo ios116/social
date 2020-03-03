@@ -55,6 +55,33 @@ services:
     depends_on:
       - master
 
+  queue:
+    image: rabbitmq:3.7.17
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: 123456
+    ports:
+      - "5672:5672"
+    networks:
+      - net
+    restart: on-failure
+
+  tarantool:
+    image: tarantool/tarantool:latest
+    container_name: inmem
+    environment:
+      TARANTOOL_PORT: 3031
+      TARANTOOL_HOST: 0.0.0.0
+      TARANTOOL_USER_NAME: admin
+      TARANTOOL_USER_PASSWORD: 123456
+    networks:
+      - net
+    volumes:
+      - ./lua/:/opt/tarantool/
+    ports:
+      - "3301:3301"
+    command: tarantool /opt/tarantool/app.lua
+
   web.ru:
     image: social:1.1
     container_name: web
@@ -68,6 +95,11 @@ services:
 
       APP_BUILD: dev
 
+      TARANTOOL_PORT: 3031
+      TARANTOOL_HOST: 0.0.0.0
+      TARANTOOL_USER_NAME: admin
+      TARANTOOL_USER_PASSWORD: 123456
+
       MASTER_PASSWORD: qwerty
       MASTER_USER: soc_user
       MASTER_DATABASE: soc_db
@@ -80,6 +112,9 @@ services:
       SLAVE_PORT: 3306
       SLAVE_HOST: slave
 
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: 123456
+
     command:  go run main.go -s web
     restart: on-failure
     volumes:
@@ -89,39 +124,7 @@ services:
     depends_on:
       - master
       - slave
-    networks:
-      - net
-  prometheus.com:
-    image: prom/prometheus
-    container_name: prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    networks:
-      - net
-    volumes:
-      - ./prometheus.yml/:/etc/prometheus/prometheus.yml
-
-  cadvisor:
-    container_name: cadvisor
-    image: google/cadvisor:latest
-    networks:
-      - net
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - "8081:8080"
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - 3000:3000
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: 123456
+      - tarantool
     networks:
       - net
 
@@ -130,5 +133,3 @@ volumes:
 networks:
   net:
     driver: bridge
-
-

@@ -1,0 +1,89 @@
+version: '3'
+services:
+  test_master:
+    image: mysql:5.7.27
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: soc_user
+      MYSQL_DATABASE: soc_db
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    volumes:
+      - ../mysql-conf/master/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ../mysql-conf/master/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+
+  test_slave:
+    image: mysql:5.7.27
+    environment:
+      MYSQL_PASSWORD: qwerty
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: slave_user
+      MYSQL_DATABASE: soc_db
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - net
+    volumes:
+      - ../mysql-conf/slave/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ../mysql-conf/slave/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    depends_on:
+      - test_master
+
+  test_tarantool:
+    image: tarantool/tarantool:latest
+    environment:
+      TARANTOOL_PORT: 3031
+      TARANTOOL_HOST: 0.0.0.0
+      TARANTOOL_USER_NAME: admin
+      TARANTOOL_USER_PASSWORD: 123456
+    networks:
+      - net
+    volumes:
+      - ../lua/:/opt/tarantool/
+    command: tarantool /opt/tarantool/app.lua
+
+  unit_tests:
+    image: social:1.1
+    container_name: unit_web
+    environment:
+      HTTP_PORT: 8080
+      HTTP_HOST: 0.0.0.0
+
+      SESSION_KEY: Auth
+      SESSION_TIME: 24
+
+      APP_BUILD: dev
+
+      TARANTOOL_PORT: 3031
+      TARANTOOL_HOST: test_tarantool
+      TARANTOOL_USER_NAME: admin
+      TARANTOOL_USER_PASSWORD: 123456
+
+      MASTER_PASSWORD: qwerty
+      MASTER_USER: soc_user
+      MASTER_DATABASE: soc_db
+      MASTER_PORT: 3306
+      MASTER_HOST: test_master
+
+      SLAVE_PASSWORD: qwerty
+      SLAVE_USER: soc_user
+      SLAVE_DATABASE: soc_db
+      SLAVE_PORT: 3306
+      SLAVE_HOST: slave
+
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: 123456
+
+    command:  "true"
+    volumes:
+      - ../social/:/code
+    depends_on:
+      - test_tarantool
+      - test_master
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
