@@ -28,7 +28,8 @@ dump:
 	docker exec master mysqldump -u root --password='123456' --single-transaction --set-gtid-purged=OFF soc_db > dump_users.sql
 
 restore:
-	docker-compose run --rm master mysql -u root -h master --password=123456 soc_db < dump_users.sql
+	docker-compose run --rm master mysql -u root -h master --password=123456 soc_db < dump_users.sqlt pull
+
 
 master:
 	docker exec -it master mysql -p -u root soc_db
