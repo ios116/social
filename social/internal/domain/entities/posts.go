@@ -2,14 +2,14 @@ package entities
 
 import (
      "context"
-     "time"
 )
 
 type Post struct {
+     _msgpack struct{} `msgpack:",asArray"`
      ID int64
-     Content string
      UserID  int64
-     Created time.Time
+     Content string
+     Created string
 }
 
 type PostQuery struct {
