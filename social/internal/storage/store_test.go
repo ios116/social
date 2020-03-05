@@ -141,4 +141,24 @@ func TestUserStore(t *testing.T) {
 		assert.Equal(t, nil, err)
 	})
 
+	t.Run("add post", func(t *testing.T) {
+
+		_, err := pg.AddPost(ctx,&entities.Post{
+		//	ID:      1,
+			Content: "some post",
+			UserID:  user.ID,
+			Created: time.Now().String(),
+		})
+		assert.Equal(t,nil, err)
+
+		post :=&entities.Post{
+		//	ID: 2,
+			Content: "some content",
+			UserID:  user.ID,
+			Created: time.Now().String(),
+		}
+
+		_, err = pg.AddPost(ctx,post)
+		assert.Equal(t,nil, err)
+	})
 }
