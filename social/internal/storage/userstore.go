@@ -10,9 +10,9 @@ import (
 type Storage struct {
 	Db      *sqlx.DB
 	DbSlave *sqlx.DB
-	Tar     *tarantool.Connection
+	TNT     *tarantool.Connection
 }
 
 func NewStorage(db *sqlx.DB, dbSlave *sqlx.DB, tar *tarantool.Connection) *Storage {
-	return &Storage{Db: db, DbSlave: dbSlave, Tar: tar}
+	return &Storage{Db: db, DbSlave: dbSlave, TNT: tar}
 }

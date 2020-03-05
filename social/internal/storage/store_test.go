@@ -156,4 +156,17 @@ func TestUserStore(t *testing.T) {
 		_, err = pg.AddPost(ctx,post)
 		assert.Equal(t,nil, err)
 	})
+
+	t.Run("select posts", func(t *testing.T) {
+	     res, err :=pg.SelectPosts(ctx,&entities.PostQuery{
+			 LastID: 0,
+			 Limit:  10,
+			 UserID: uint32(user.ID),
+			 Offset: 0,
+		 })
+	     if err != nil {
+	     	t.Fatal(err)
+		 }
+		 assert.Equal(t,2,len(res))
+	})
 }
