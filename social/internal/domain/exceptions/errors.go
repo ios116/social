@@ -13,6 +13,7 @@ var (
 	QueryRequired       = DomainError("query required")
 	LastNameRequired    = DomainError("LastName required")
 	IntegerRequired     = DomainError("integer required")
+	NotInt64            = DomainError("returning not int64")
 	EmailRequired       = DomainError("Email required")
 	PasswordRequired    = DomainError("Password required")
 	ObjectDoesNotExist  = DomainError("Object does not exist")

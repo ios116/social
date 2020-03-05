@@ -2,21 +2,21 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"social/internal/domain/entities"
+	"social/internal/domain/exceptions"
 )
 
-func (p *Storage) AddPost(ctx context.Context, post *entities.Post) (int64, error) {
-	//space := p.Tar.Schema.Spaces["posts"]
-    resp, err := p.Tar.Insert("posts",post)
+func (p *Storage) AddPost(ctx context.Context, post *entities.Post) (uint64, error) {
+
+    resp, err := p.Tar.Insert("posts",[]interface{}{nil,post.UserID, post.Content, post.Created})
     if err != nil {
     	return 0, err
 	}
-	fmt.Println("data= ",resp.Data)
-	fmt.Println("error= ",resp.Error)
-	fmt.Println("code=", resp.Code)
-    fmt.Println("reqId= ",resp.RequestId)
-	return 0, nil
+    id, ok := resp.Tuples()[0][0].(uint64)
+    if !ok {
+    	return 0, exceptions.NotInt64
+	}
+	return id, nil
 
 }
 func (p *Storage) DeletePost(ctx context.Context, id int64) error {
