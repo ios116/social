@@ -23,9 +23,8 @@ require (
 	go.uber.org/dig v1.7.0
 	go.uber.org/multierr v1.2.0 // indirect
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
-	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
-	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/image v0.5.0 // indirect
 	gonum.org/v1/netlib v0.0.0-20200228210028-9c732c01dec4 // indirect
 	gonum.org/v1/plot v0.0.0-20191004082913-159cd04f920c
 	google.golang.org/appengine v1.4.0 // indirect
